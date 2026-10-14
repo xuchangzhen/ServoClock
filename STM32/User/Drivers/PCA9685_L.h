@@ -1,0 +1,24 @@
+#ifndef __PCA9685_L_H
+#define __PCA9685_L_H
+
+#include "stm32f10x.h"                  // Device header
+
+#define PCA9685_L_ADDRESS 				0x40
+#define PCA9685_L_PRESCALER_ADDRESS 	0xFE
+#define PCA9685_L_LED0 					0x06
+#define PCA9685_L_MODE1       	    	0x00
+
+typedef enum{
+	PCA9685_L_OK,
+	PCA9685_L_ERROR_READ_MODE1,
+	PCA9685_L_ERROR_WRITE_MODE1,
+	PCA9685_L_ERROR_WRITE_PRESCALER,
+	PCA9685_L_ERROR_RECOVER_MODE1,
+	PCA9685_L_ERROR_SETPWM
+}PCA9685_L_STATUS;
+
+PCA9685_L_STATUS PCA9685_L_SetFreq50Hz(void);
+PCA9685_L_STATUS PCA9685_L_SETPWM(uint8_t Channel, uint16_t OnCount, uint16_t OffCount);
+
+
+#endif
