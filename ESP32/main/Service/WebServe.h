@@ -13,8 +13,8 @@ typedef enum {
 void WebServe_Start(void);
 void WebServe_Stop(void);
 
-WebCommand_t WebServer_GetCommand(void);
-void WebCommand_Process(void);
+WebCommand_t WebServer_GetCommand(void);  //查看网页command类型
+void WebCommand_Process(void);             
 
 
 #endif

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Servo Calibration</title>
+</head>
+<body>
+    <h1>Servo Calibration</h1>
+
+    <button onclick="send('/api/pwm/sub10')">-10</button>
+    <button onclick="send('/api/pwm/sub1')">-1</button>
+    <button onclick="send('/api/pwm/add1')">+1</button>
+    <button onclick="send('/api/pwm/add10')">+10</button>
+    <button onclick="send('/api/pwm/Save')">Save</button>
+
+    <script>
+    function send(url) {
+        fetch(url, {
+            method: "POST"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            return response.text();
+        })
+        .then(data => {
+            console.log("Response:", data);
+        })
+        .catch(error => {
+            console.error("Request failed:", error);
+        });
+    }
+    </script>
+</body>
+</html>
