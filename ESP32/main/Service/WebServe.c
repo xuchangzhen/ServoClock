@@ -3,13 +3,18 @@
 
 #include "esp_http_server.h"
 #include "esp_log.h"
+#include "freertos/queue.h"
+
+#include "esp_heap_caps.h"
+
+#define WEB_COMMAND_QUEUE_LENGTH 8U
 
 //引用编译时嵌入固件的网页数据
 extern const char HTMLStart[] asm("_binary_index_html_start");
 
 static const char* TAG = "WEB";
 static httpd_handle_t WebServer = NULL;
-static volatile WebCommand_t CurrentCommand = WEB_COMMAND_NONE;
+static QueueSetHandle_t WebCommandQueue = NULL;
 
 // 不同 URI 对应的控制命令
 static WebCommand_t PWMAdd1Command = WEB_COMMAND_PWM_ADD_1;
@@ -18,8 +23,24 @@ static WebCommand_t PWMAdd10Command = WEB_COMMAND_PWM_ADD_10;
 static WebCommand_t PWMSub10Command = WEB_COMMAND_PWM_SUB_10;
 static WebCommand_t PWMSaveCommand = WEB_COMMAND_SAVE;
 
+esp_err_t WebCommandQueue_Init(void) {  //初始化freertos队列
+    if (WebCommandQueue != NULL) return ESP_OK;
 
-static esp_err_t RootHandler(httpd_req_t* Request) {
+    WebCommandQueue = xQueueCreate(WEB_COMMAND_QUEUE_LENGTH, sizeof(WebCommand_t));
+
+    if (WebCommandQueue == NULL) {
+        ESP_LOGI(TAG, "Command queue create failed");
+        return ESP_ERR_NO_MEM;
+    }
+
+    ESP_LOGI(TAG, "Command queue create");
+
+    return ESP_OK;
+}
+
+
+
+static esp_err_t RootHandler(httpd_req_t* Request) {  //网页根目录请求
     esp_err_t Result;
     
     //设置http响应类型
@@ -38,20 +59,28 @@ static esp_err_t PWMCommandHandler(httpd_req_t* Request) {
     WebCommand_t Command;
 
     //获取uri注册传入地址
-    if (Request->user_ctx == NULL) {
+    if (Request->user_ctx == NULL || WebCommandQueue == NULL) {
         return httpd_resp_send_err(
             Request,
             HTTPD_500_INTERNAL_SERVER_ERROR,
-            "Invalid command"
+            "Command Serve unavailable"
         );
     }
 
     Command = *(WebCommand_t*)Request->user_ctx;
-    CurrentCommand = Command;
-    
-    ESP_LOGI(TAG, "Receive command: %d", (int)Command);
+    if ( xQueueSend(WebCommandQueue, &Command, 0) != pdPASS) {  //将指令加入队列
+        ESP_LOGI(TAG, "Command queue full");
 
-    httpd_resp_sendstr(Request, "OK");
+        esp_err_t Result = httpd_resp_set_status(Request, "503 Service Unavailable");
+
+        if (Result != ESP_OK) return Result;
+
+        return httpd_resp_sendstr(Request, "Queue full");
+    }  
+    
+    ESP_LOGI(TAG, "Queue command: %d", (int)Command);
+
+    httpd_resp_sendstr(Request, "QUEUE");
 
     return ESP_OK;
 }
@@ -130,50 +159,42 @@ void WebServe_Stop(void) {
     ESP_LOGI(TAG, "Stopped");
 }
 
-WebCommand_t WebServer_GetCommand(void) {
-    WebCommand_t Command;
-
-    Command = CurrentCommand;
-
-    CurrentCommand = WEB_COMMAND_NONE;
-
-    return Command;
-}
-
 //发送校准数据
 void WebCommand_Process(void) {
     WebCommand_t Command;
 
-    Command = WebServer_GetCommand();
+    if (WebCommandQueue == NULL) return ;
 
-    switch (Command) {
+    for (uint8_t i = 0; i < WEB_COMMAND_QUEUE_LENGTH; ++i ) {
+        //队列为空立即退出
+        if (xQueueReceive(WebCommandQueue, &Command, 0) != pdTRUE) break;
 
-    case WEB_COMMAND_PWM_ADD_1:
-        UART2_SendData("PWM:+1\n", 7);
-        ESP_LOGI(TAG, "APP received: PWM +1");
-        break;
+        //解析指令
+        switch (Command) {
+            
+            case WEB_COMMAND_PWM_ADD_1:
+                UART2_SendData("PWM:+1\n", 7);
+                break;
 
-    case WEB_COMMAND_PWM_SUB_1:
-        UART2_SendData("PWM:-1\n", 7);
-        ESP_LOGI(TAG, "APP received: PWM -1");
-        break;
+            case WEB_COMMAND_PWM_SUB_1:
+                UART2_SendData("PWM:-1\n", 7);
+                break;
 
-    case WEB_COMMAND_PWM_ADD_10:
-        UART2_SendData("PWM:+10\n", 8);
-        ESP_LOGI(TAG, "APP received: PWM +10");
-        break;
+            case WEB_COMMAND_PWM_ADD_10:
+                UART2_SendData("PWM:+10\n", 8);
+                break;
 
-    case WEB_COMMAND_PWM_SUB_10:
-        UART2_SendData("PWM:-10\n", 8);
-        ESP_LOGI(TAG, "APP received: PWM -10");
-        break;
+            case WEB_COMMAND_PWM_SUB_10:
+                UART2_SendData("PWM:-10\n", 8);
+                break;
 
-    case WEB_COMMAND_SAVE:
-        UART2_SendData("Save\n", 5);
-        ESP_LOGI(TAG, "APP received: Save");
-    default:
-        break;
+            case WEB_COMMAND_SAVE:
+                UART2_SendData("Save\n", 5);
+                break;
+            default:
+                break;
+        }
+        ESP_LOGI(TAG, "Dispatched Command %d", (int)Command);
     }
-
     // vTaskDelay(pdMS_TO_TICKS(10));
 }

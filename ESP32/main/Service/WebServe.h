@@ -1,6 +1,8 @@
 #ifndef __WEBSERVE_H
 #define __WEBSERVE_H
 
+#include "esp_err.h"
+
 typedef enum {
     WEB_COMMAND_NONE = 0,
     WEB_COMMAND_PWM_ADD_1,
@@ -13,8 +15,8 @@ typedef enum {
 void WebServe_Start(void);
 void WebServe_Stop(void);
 
-WebCommand_t WebServer_GetCommand(void);  //查看网页command类型
-void WebCommand_Process(void);             
+esp_err_t WebCommandQueue_Init(void);  //初始化命令队列
+void WebCommand_Process(void);  //解析指令 
 
 
 #endif

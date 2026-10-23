@@ -5,15 +5,17 @@
 #include "WebServe.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_err.h"
 #include "esp_log.h"
 
 static const char* TAG = "APP";
 
 void App_Init(void) {
     UART2_Init();
+    ESP_ERROR_CHECK(WebCommandQueue_Init());
     WIFI_Init();
     //Time_Get();
-                
+
     char Data[16];
     while (1) {
         WebCommand_Process();
