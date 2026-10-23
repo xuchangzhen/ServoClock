@@ -20,6 +20,7 @@
 #include "string.h"
 #include "USART_Test.h"
 
+static int Count30 = 30;
 
 //时钟应用初始化
 void ServoClockApp_Init(void) {
@@ -53,7 +54,8 @@ void Servo_Run(void){  //舵机运行状态
 	CommandParse_USART2();
 	if (CommandMode == COMMANDPARSE_SELECT_SERVO ) AppMode = SERVO_MODE_CALIBRATE_ON;  //进入校准模式
 	else if (CommandMode == COMMANDPARSE_TIME) {  //展示时间
-		Show_HourAndMin();
+		//Show_HourAndMin();
+		Show_MinAndSec();
 		CommandMode = COMMANDPARSE_NONE;
 	}
 	else if (MyKey_GetPressed(GPIOB, GPIO_Pin_15) == 1) {  //舵机状态切换
@@ -98,6 +100,19 @@ void Servo_CalibrationOff(void) {  //网页校准ON数据
 	AppMode = SERVO_MODE_RUN;
 	CommandMode = COMMANDPARSE_NONE;
 }  
+
+void Servo_Count30(void) {  //倒计时30s
+	if (Count_Flag && Count30 != -1) {
+		uint8_t D1 = Count30 / 10;
+		uint8_t D2 = Count30 % 10;
+		
+		ServoShowNum(D1, 2);
+		ServoShowNum(D2, 3); 
+		
+		Count30 -= 1;
+		Count_Flag = 0;
+	}
+}        
 	
 
 

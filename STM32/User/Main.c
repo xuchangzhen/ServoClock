@@ -21,7 +21,7 @@
 #include "ServoClockApp.h"
 
 
-#define TEST_MODE 0
+#define TEST_MODE 1
 
 
 
@@ -33,16 +33,12 @@ int main(void) {
 	PCA9685_SetFreq50Hz();
 	Servo_Init();
 	Servo_Off();
-
+	MyTIM2_Init();
+	
+	
+	
 	while (1) {
-		MyUSART2_ReceiveBuff();
-		
-		if (BufferFlag == 1) {
-			Show_HourAndMin();
-//			Show_MinAndSec();  
-
-			
-		}
+		//Servo_Count30();
 	}
 	
 
@@ -51,7 +47,7 @@ int main(void) {
 	ServoClockApp_Init();  
 	
 	while (1) {
-		//ServoClockApp_Process();
+		ServoClockApp_Process();
 	}
 	
 #endif

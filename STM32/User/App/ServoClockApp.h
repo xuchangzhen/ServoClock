@@ -17,5 +17,6 @@ void ServoClockApp_Process(void);   //程序进程
 void Servo_Run(void); 				//舵机运行状态
 void Servo_CalibrationOn(void);		//舵机校准On
 void Servo_CalibrationOff(void);	//舵机校准Off
+void Servo_Count30(void);           //倒计时30s
 
 #endif 
