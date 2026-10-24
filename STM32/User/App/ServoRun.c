@@ -153,3 +153,8 @@ void Show_HourAndMin(void) {
 		ServoShowNum(NUM[i], i);
 	}
 }
+
+//展示年份
+void Show_Year(void) {
+	
+}

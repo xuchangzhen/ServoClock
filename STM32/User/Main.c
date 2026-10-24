@@ -33,7 +33,10 @@ int main(void) {
 	PCA9685_SetFreq50Hz();
 	Servo_Init();
 	Servo_Off();
-
+	//MyTIM2_Init();
+	
+	
+	
 	while (1) {
 		MyUSART2_ReceiveBuff();
 		
