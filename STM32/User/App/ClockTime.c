@@ -1,4 +1,5 @@
 #include "ClockTime.h"
+#include "string.h"
 
 //判断位数是否为数字
 static uint8_t is_digit(uint8_t c) {
@@ -47,16 +48,18 @@ uint8_t ClockTime_Parse(const char* Data, ClockTime_t* Time) {
 //返回 分秒
 uint8_t Get_MinAndSec(ClockTime_t* Time) {
 	ClockTime_t Tmp;
-	if ( ClockTime_Parse(USART2_Buffer, &Tmp) == 0) return 0;
+	char* TimeData = strchr(USART2_Buffer, ':');
+	if ( ClockTime_Parse(TimeData + 1, &Tmp) == 0) return 0;
 	Time->Minite = Tmp.Minite;
 	Time->Second = Tmp.Second;
 	return 1;
-}
+}	
 
 //返回 时分
 uint8_t Get_HourAndMin(ClockTime_t* Time) {
 	ClockTime_t Tmp;
-	if ( ClockTime_Parse(USART2_Buffer, &Tmp) == 0) return 0;
+	char* TimeData = strchr(USART2_Buffer, ':');
+	if ( ClockTime_Parse(TimeData + 1, &Tmp) == 0) return 0;
 	Time->Hour = Tmp.Hour;
 	Time->Minite = Tmp.Minite;
 	return 1;
@@ -65,7 +68,8 @@ uint8_t Get_HourAndMin(ClockTime_t* Time) {
 //获取年份
 uint8_t Get_Year(ClockTime_t* Time) {
 	ClockTime_t Tmp;
-	if ( ClockTime_Parse(USART2_Buffer, &Tmp) == 0) return 0;
+	char* TimeData = strchr(USART2_Buffer, ':');
+	if ( ClockTime_Parse(TimeData + 1, &Tmp) == 0) return 0;
 	Time->Year = Tmp.Year;
 	return 1;
 }

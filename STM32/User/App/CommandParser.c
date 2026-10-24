@@ -51,11 +51,11 @@ void CommandParse_USART2(void) {  //USART2
 	//解析RUN指令
 	if (strncmp(USART2_Buffer, "ADJUST:START", 12) == 0) {
 		CommandMode = COMMANDPARSE_ADDJUST_PWM;
-	}else if (strncmp(USART2_Buffer, "MINUTE:", 7) == 0) {
+	}else if (strncmp(USART2_Buffer, "MINUTE", 6) == 0) {
 		CommandMode = COMMANDPARSE_TIME_MINUTE;
-	}else if (strncmp(USART2_Buffer, "HOUR:", 5) == 0) {
+	}else if (strncmp(USART2_Buffer, "HOUR", 4) == 0) {
 		CommandMode = COMMANDPARSE_TIME_HOUR;
-	}else if (strncmp(USART2_Buffer, "YEAR:", 5) == 0) {
+	}else if (strncmp(USART2_Buffer, "YEAR", 4) == 0) {
 		CommandMode = COMMANDPARSE_TIME_YEAR;
 	}
 	

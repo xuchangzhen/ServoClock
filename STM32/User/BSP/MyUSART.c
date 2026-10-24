@@ -9,6 +9,8 @@ char USART1_Buffer[USART1_BufferSize];
 
 char USART2_Buffer[USART2_BufferSize];
 uint8_t BufferFlag = 0;
+static uint8_t BufferIndex = 0;
+static uint8_t FrameReceiving = 0;
 
 //USAR1初始化
 void MyUSART1_Init(void) {
@@ -132,14 +134,25 @@ void MyUSART2_ReceiveBuff(void) {
 		
 		if (Data == '#') {  //检测到帧头，开始接收数据
 			BufferIndex = 0;
-		}else if (Data != '@' ) {  //未检测到帧尾，一直接收
-			USART2_Buffer[BufferIndex] = Data;
+			FrameReceiving = 1;
+		}
+		
+		if (FrameReceiving == 0) return ;  //为接收到帧头
+		
+		if (Data != '@' ) {  //未检测到帧尾，一直接收
+			USART2_Buffer[BufferIndex] = (char)Data;
 			BufferIndex++;
 		}else if (Data == '@' ) {  //帧尾 结束标志
+			USART2_Buffer[BufferIndex] = '\0';
 			BufferFlag = 1;
 			BufferIndex = 0;
+			FrameReceiving = 0;
 		}
-		if (BufferIndex >= USART2_BufferSize - 1) BufferIndex = 0;
+		if (BufferIndex >= USART2_BufferSize - 1) {
+			BufferIndex = 0;
+			FrameReceiving = 0;
+			return ;
+		}
 	}
 }
 

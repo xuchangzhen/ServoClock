@@ -13,7 +13,6 @@ extern char USART1_Buffer[USART1_BufferSize];
 
 //时间数组
 extern char USART2_Buffer[USART2_BufferSize];
-static uint8_t BufferIndex = 0;
 extern uint8_t BufferFlag;
 
 
