@@ -130,16 +130,14 @@ void MyUSART2_ReceiveBuff(void) {
 	if (USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == SET) {
 		Data = USART_ReceiveData(USART2);
 		
-		if (Data == '\n') {
-			USART2_Buffer[BufferIndex] = '\0';
+		if (Data == '#') {  //检测到帧头，开始接收数据
+			BufferIndex = 0;
+		}else if (Data != '@' ) {  //未检测到帧尾，一直接收
+			USART2_Buffer[BufferIndex] = Data;
+			BufferIndex++;
+		}else if (Data == '@' ) {  //帧尾 结束标志
 			BufferFlag = 1;
 			BufferIndex = 0;
-		}else if (BufferIndex == 0){
-			USART2_Buffer[BufferIndex] = Data;
-			BufferIndex++;
-		}else if (Data != '\r' ) {
-			USART2_Buffer[BufferIndex] = Data;
-			BufferIndex++;
 		}
 		if (BufferIndex >= USART2_BufferSize - 1) BufferIndex = 0;
 	}

@@ -54,7 +54,7 @@ int main(void) {
 	ServoClockApp_Init();  
 	
 	while (1) {
-		//ServoClockApp_Process();
+		ServoClockApp_Process();
 	}
 	
 #endif

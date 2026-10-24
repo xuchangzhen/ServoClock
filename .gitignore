@@ -1,0 +1,9 @@
+# Keil 编译输出
+/STM32/Objects/
+/STM32/Listings/
+
+# Keil 用户本地配置
+/STM32/*.uvguix.*
+
+# PCB Gerber 文件
+/Gerber_stm32机械时钟拓展板PCB_2025-10-17 (1)/

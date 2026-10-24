@@ -156,5 +156,23 @@ void Show_HourAndMin(void) {
 
 //展示年份
 void Show_Year(void) {
+	ClockTime_t Time;
+	if ( Get_Year(&Time)== 0) return ;
 	
+	//展示数据数组
+	uint8_t NUM[4];
+	
+	NUM[0] = Time.Year / 1000;
+	Time.Year %= 1000;
+	
+	NUM[1] = Time.Year / 100;
+	Time.Year %= 100;
+	
+	NUM[2] = Time.Year / 10;
+	NUM[3] = Time.Year % 10;
+	
+	//按位展示数据
+	for (int i = 0; i < Digit; ++i ) {
+		ServoShowNum(NUM[i], i);
+	}
 }
