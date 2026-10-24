@@ -5,13 +5,17 @@
 
 typedef enum{
 	COMMANDPARSE_NONE,
-	COMMANDPARSE_SELECT_SERVO,
+	//COMMANDPARSE_SELECT_SERVO,
 	COMMANDPARSE_ADDJUST_PWM,
 	COMMANDPARSE_SAVE,
-	COMMANDPARSE_TIME
+	COMMANDPARSE_TIME_MINUTE,
+	COMMANDPARSE_TIME_HOUR,
+	COMMANDPARSE_TIME_YEAR
+	
 } ParseCommand_t;
 
-extern ParseCommand_t CommandMode; //命令状态
+extern ParseCommand_t CommandMode; 			//命令状态
+extern ParseCommand_t CommandBeforeJust;	//校准前舵机状态
 
 void CommandParse_USART1(void);  //USART1  接收舵机校准编号
 void CommandParse_USART2(void);  //USART2  接收舵机校准信号和时间数据

@@ -33,7 +33,7 @@ int main(void) {
 	PCA9685_SetFreq50Hz();
 	Servo_Init();
 	Servo_Off();
-	MyTIM2_Init();
+	//MyTIM2_Init();
 	
 	
 	

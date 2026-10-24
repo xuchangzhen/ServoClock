@@ -141,7 +141,7 @@ void MyUSART2_ReceiveBuff(void) {
 			USART2_Buffer[BufferIndex] = Data;
 			BufferIndex++;
 		}
-		if (BufferIndex >= 15) BufferIndex = 0;
+		if (BufferIndex >= USART2_BufferSize - 1) BufferIndex = 0;
 	}
 }
 
