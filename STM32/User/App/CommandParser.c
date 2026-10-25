@@ -52,6 +52,10 @@ void CommandParse_USART2(void) {  //USART2
 		CommandMode = COMMANDPARSE_ADDJUST_PWM;
 	}else if (strncmp(USART2_Buffer, "TIME:", 5) == 0) {
 		ClockTime_Valid(USART2_Buffer);
+	}else if (strncmp(USART2_Buffer, "START", 5) == 0) {
+		CommandMode = COMMANDPARSE_START;
+	}else if (strncmp(USART2_Buffer, "STOP", 4) == 0) {
+		CommandMode = COMMANDPARSE_STOP;
 	}
 	
 	//解析显示指令

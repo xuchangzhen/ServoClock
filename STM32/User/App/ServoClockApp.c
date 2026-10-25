@@ -42,24 +42,34 @@ void ServoClockApp_Init(void) {
 
 
 void ServoClockApp_Process(void){  //程序进程
-	if (AppMode == SERVO_MODE_RUN) 				    Servo_Run();   			 //运行态             //进入校准后会出现无法回到RUN状态，需要设置触发按键
-	else if (AppMode == SERVO_MODE_CALIBRATE_ON) 	Servo_CalibrationOn();   //校准态             
-	else if (AppMode == SERVO_MODE_CALIBRATE_OFF)   Servo_CalibrationOff();  //校准态
+	if (AppMode == SERVO_MODE_RUN) 				    Clock_Run();   			 //运行态           
+	else if (AppMode == SERVO_MODE_CALIBRATE_ON) 	Clock_CalibrationOn();   //校准态             
+	else if (AppMode == SERVO_MODE_CALIBRATE_OFF)   Clock_CalibrationOff();  //校准态
+	else if (AppMode == SERVO_MODE_RUN)				Clock_Off();			 //关闭运行				
 }    
 
-void Servo_Run(void){  //舵机运行状态
+void Clock_Run(void){  //舵机运行状态
 	CommandParse_USART1();
 	CommandParse_USART2();
 	if (CommandMode == COMMANDPARSE_ADDJUST_PWM ) AppMode = SERVO_MODE_CALIBRATE_ON;  //进入校准模式
-	else if (CommandMode == COMMANDPARSE_TIME) {  //展示时间
+	else if (CommandMode == COMMANDPARSE_STOP) 	  AppMode = SERVO_MODE_RUN; 		  //进入校准模式
+	else if (TimeValid) {  															  //展示时间
+		TimeValid = 0;
 		Show_Time();
 	}
 	
 	CommandMode = COMMANDPARSE_NONE;  //避免阻塞
-} 				
+} 		
+
+void Clock_Off(void) {  //关闭运行
+	CommandParse_USART2();
+	Clock_Off();
+	
+	if (CommandMode == COMMANDPARSE_START) AppMode = SERVO_MODE_RUN;
+}
 
 
-void Servo_CalibrationOn(void) {  		//网页校准ON数据
+void Clock_CalibrationOn(void) {  		//网页校准ON数据
 	if (SerialRxFlag != 1) return ;     //等待校准位到来 
 
 	CommandParse_USART2();
@@ -85,7 +95,7 @@ void Servo_CalibrationOn(void) {  		//网页校准ON数据
 	//按键再次按下保存数据
 
 
-void Servo_CalibrationOff(void) {  //网页校准ON数据
+void Clock_CalibrationOff(void) {  //网页校准ON数据
 	CommandParse_USART2();
 	if (CommandMode == COMMANDPARSE_ADDJUST_PWM) {  //获取到校准信号
 		ServoCalibration_Off();

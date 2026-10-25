@@ -4,6 +4,7 @@
 #include "stm32f10x.h"                  // Device header
 
 typedef enum {  //APP运行状态
+	SERVO_MODE_NONE,
 	SERVO_MODE_RUN,
 	SERVO_MODE_CALIBRATE_ON,
 	SERVO_MODE_CALIBRATE_OFF,
@@ -14,9 +15,10 @@ static ServoApp_Mode AppMode = SERVO_MODE_ERROR;
 
 void ServoClockApp_Init(void);      //时钟应用初始化
 void ServoClockApp_Process(void);   //程序进程
-void Servo_Run(void); 				//舵机运行状态
-void Servo_CalibrationOn(void);		//舵机校准On
-void Servo_CalibrationOff(void);	//舵机校准Off
-void Servo_Count30(void);           //倒计时30s   (客服定制功能)
+void Clock_Run(void); 				//舵机运行状态
+void Clock_Off(void);				//时钟关闭
+void Clock_CalibrationOn(void);		//舵机校准On
+void Clock_CalibrationOff(void);	//舵机校准Off
+void Clock_Count30(void);           //倒计时30s   (客服定制功能)
 
 #endif 

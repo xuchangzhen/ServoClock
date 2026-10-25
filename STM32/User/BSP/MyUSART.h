@@ -4,7 +4,7 @@
 #include "stm32f10x.h"                  // Device header
 
 #define USART1_BufferSize 	3U
-#define USART2_BufferSize 	16U
+#define USART2_BufferSize 	32U
 
 //校准中断
 extern uint8_t SerialRxFlag;
