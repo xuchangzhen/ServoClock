@@ -176,3 +176,10 @@ void Show_Year(void) {
 		ServoShowNum(NUM[i], i);
 	}
 }
+
+//根据实际指令显示
+void Show_Time(void) {
+	if 		(DisplayMode == DISPLAY_YEAR)	  Show_Year();
+	else if (DisplayMode == DISPLAY_HOUR) 	  Show_HourAndMin();
+	else if (DisplayMode == DISPLAY_MINUTE)   Show_MinAndSec();
+}

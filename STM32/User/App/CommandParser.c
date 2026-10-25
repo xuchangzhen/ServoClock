@@ -7,8 +7,7 @@
 #include "ServoRun.h"
 #include "MyKey.h"
 
-ParseCommand_t CommandBeforeJust = COMMANDPARSE_NONE; 		//校准前舵机状态
-ParseCommand_t CommandMode		 = COMMANDPARSE_TIME_HOUR;  //初始状态
+ParseCommand_t CommandMode		 = COMMANDPARSE_TIME;  //初始状态
 
 void CommandParse_USART1(void) {  //USART1  接收舵机校准编号
 	if (SerialRxFlag == 1) {  //接收到校准信号
@@ -38,7 +37,7 @@ void CommandParse_USART2(void) {  //USART2
 	if (CommandMode == COMMANDPARSE_ADDJUST_PWM) {  //舵机调整阶段 
 		if (strncmp(USART2_Buffer, "ADJUST:END", 10) == 0) {
 			SerialRxFlag = 0;  //避免错误退出导致的接收错误
-			CommandMode  = CommandBeforeJust;  //可行?
+			CommandMode  = COMMANDPARSE_TIME;  //可行?
 		}else if (strncmp(USART2_Buffer, "PWM:", 4) == 0) {  //获取到的数据为PWM调整信号
 			CommandMode = COMMANDPARSE_ADDJUST_PWM;
 		}else if ( (strncmp(USART2_Buffer, "Save", 4) == 0) || (MyKey_GetPressed(GPIOB, GPIO_Pin_13) == 1) ) {  //获取到数据保存信号
@@ -51,13 +50,23 @@ void CommandParse_USART2(void) {  //USART2
 	//解析RUN指令
 	if (strncmp(USART2_Buffer, "ADJUST:START", 12) == 0) {
 		CommandMode = COMMANDPARSE_ADDJUST_PWM;
-	}else if (strncmp(USART2_Buffer, "MINUTE", 6) == 0) {
-		CommandMode = COMMANDPARSE_TIME_MINUTE;
-	}else if (strncmp(USART2_Buffer, "HOUR", 4) == 0) {
-		CommandMode = COMMANDPARSE_TIME_HOUR;
-	}else if (strncmp(USART2_Buffer, "YEAR", 4) == 0) {
-		CommandMode = COMMANDPARSE_TIME_YEAR;
+	}else if (strncmp(USART2_Buffer, "TIME:", 5) == 0) {
+		ClockTime_Valid(USART2_Buffer);
 	}
+	
+	//解析显示指令
+	if (strncmp(USART2_Buffer, "YEAR", 4) == 0) {
+		CommandMode = COMMANDPARSE_TIME;
+		DisplayMode = DISPLAY_YEAR;
+	}else if (strncmp(USART2_Buffer, "HOUR:", 4) == 0) {
+		CommandMode = COMMANDPARSE_TIME;
+		DisplayMode = DISPLAY_HOUR;
+	}else if (strncmp(USART2_Buffer, "MINUTE", 6) == 0) {
+		CommandMode = COMMANDPARSE_TIME;
+		DisplayMode = DISPLAY_MINUTE;
+	}
+	
+	
 	
 	BufferFlag = 0;
 }

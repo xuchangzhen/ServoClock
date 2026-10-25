@@ -135,6 +135,7 @@ void MyUSART2_ReceiveBuff(void) {
 		if (Data == '#') {  //检测到帧头，开始接收数据
 			BufferIndex = 0;
 			FrameReceiving = 1;
+			return ;
 		}
 		
 		if (FrameReceiving == 0) return ;  //为接收到帧头

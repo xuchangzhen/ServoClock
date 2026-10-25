@@ -51,15 +51,8 @@ void Servo_Run(void){  //舵机运行状态
 	CommandParse_USART1();
 	CommandParse_USART2();
 	if (CommandMode == COMMANDPARSE_ADDJUST_PWM ) AppMode = SERVO_MODE_CALIBRATE_ON;  //进入校准模式
-	else if (CommandMode == COMMANDPARSE_TIME_MINUTE) {  //展示时间
-		CommandBeforeJust = CommandMode;
-		Show_MinAndSec();
-	}else if (CommandMode == COMMANDPARSE_TIME_HOUR) {
-		CommandBeforeJust = CommandMode;
-		Show_HourAndMin();
-	}else if (CommandMode == COMMANDPARSE_TIME_YEAR) {
-		CommandBeforeJust = CommandMode;
-		Show_Year();
+	else if (CommandMode == COMMANDPARSE_TIME) {  //展示时间
+		Show_Time();
 	}
 	
 	CommandMode = COMMANDPARSE_NONE;  //避免阻塞
@@ -75,12 +68,10 @@ void Servo_CalibrationOn(void) {  		//网页校准ON数据
 	}else if (CommandMode == COMMANDPARSE_SAVE) {
 		LED_Yellow_ON();
 		AppMode = SERVO_MODE_CALIBRATE_OFF;
-	}else if (  //读取到时间指令 恢复显示时间
-		CommandMode == COMMANDPARSE_TIME_MINUTE || 
-		CommandMode == COMMANDPARSE_TIME_HOUR   ||
-		CommandMode == COMMANDPARSE_TIME_YEAR
-	) AppMode = SERVO_MODE_RUN;
-	
+	}else if (CommandMode == COMMANDPARSE_TIME) {  //读取到时间指令 恢复显示时间
+		AppMode = SERVO_MODE_RUN;
+	} 
+
 	if (MyKey_GetPressed(GPIOB, GPIO_Pin_15) == 1) {  //舵机状态切换
 		ServoToggle(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 	}

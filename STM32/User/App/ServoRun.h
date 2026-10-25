@@ -34,6 +34,7 @@ void Servo_Off(void);   										//关闭状态
 void ServoShowNum(uint8_t Num, uint8_t Digit_POS);              //根据断码表展示数据
 void Show_MinAndSec(void);                                      //展示 分 秒
 void Show_HourAndMin(void);  									//展示 时 分
-void Show_Year(void);  											//展示 年份     没写
+void Show_Year(void);  											//展示 年份 
+void Show_Time(void);											//根据实际指令显示
 	
 #endif

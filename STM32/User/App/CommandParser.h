@@ -3,15 +3,12 @@
 
 #include "stm32f10x.h"                  // Device header
 
-typedef enum{
+typedef enum{  //舵机运行状态
 	COMMANDPARSE_NONE,
 	//COMMANDPARSE_SELECT_SERVO,
 	COMMANDPARSE_ADDJUST_PWM,
 	COMMANDPARSE_SAVE,
-	COMMANDPARSE_TIME_MINUTE,
-	COMMANDPARSE_TIME_HOUR,
-	COMMANDPARSE_TIME_YEAR
-	
+	COMMANDPARSE_TIME
 } ParseCommand_t;
 
 extern ParseCommand_t CommandMode; 			//命令状态
