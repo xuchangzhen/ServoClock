@@ -1,20 +1,9 @@
 #ifndef __WEBSERVE_H
 #define __WEBSERVE_H
 
-typedef enum {
-    WEB_COMMAND_NONE = 0,
-    WEB_COMMAND_PWM_ADD_1,
-    WEB_COMMAND_PWM_SUB_1,
-    WEB_COMMAND_PWM_ADD_10,
-    WEB_COMMAND_PWM_SUB_10,
-    WEB_COMMAND_SAVE
-} WebCommand_t;
+#include "esp_err.h"
 
 void WebServe_Start(void);
 void WebServe_Stop(void);
-
-WebCommand_t WebServer_GetCommand(void);
-void WebCommand_Process(void);
-
 
 #endif

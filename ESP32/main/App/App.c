@@ -1,27 +1,31 @@
 #include <App.h>
-#include "MyWIFI.h"
 #include "MySNTP.h" 
 #include "MyUART.h"
 #include "WebServe.h"
+#include "MyWIFI.h"
+#include "CommandService.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_err.h"
 #include "esp_log.h"
 
 static const char* TAG = "APP";
 
 void App_Init(void) {
     UART2_Init();
+    ESP_ERROR_CHECK(CommandService_Init());
     WIFI_Init();
-    Time_Get();
-                
+    //Time_Get();
+
     char Data[16];
     while (1) {
-        // WebCommand_Process();
-        // vTaskDelay(pdMS_TO_TICKS(50));
-        TimeToSTM32(Data, 10);
-        UART2_SendData(Data, 9);    
+        CommandService_Process();
+        vTaskDelay(pdMS_TO_TICKS(50));
+        // TimeToSTM32(Data, 10);
+        // UART2_SendData(Data, 9);    
 
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        // vTaskDelay(pdMS_TO_TICKS(1000));
 
     }
 }

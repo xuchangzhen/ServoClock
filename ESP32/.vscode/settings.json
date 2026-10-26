@@ -36,5 +36,5 @@
     "--query-driver=**"
   ],
 "idf.flashType": "UART",
-"idf.port": "COM5"
+"idf.port": "COM9"
 }
