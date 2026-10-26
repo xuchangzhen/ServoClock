@@ -39,7 +39,7 @@ uint8_t ClockTime_Parse(const char* Data) {
 	Year   = (Data[9] - '0') * 1000 + (Data[10] - '0') * 100 + 
 			 (Data[11] - '0') * 10 + Data[12] - '0';
 	
-	if (Second > 60 || Minite > 60 || Hour > 24) return 0;
+	if (Second >= 60 || Minite >= 60 || Hour >= 24) return 0;
 	
 	LastTime.Year   = Year;
 	LastTime.Hour 	= Hour;
@@ -54,9 +54,11 @@ uint8_t ClockTime_Parse(const char* Data) {
 //时间是否可用
 void ClockTime_Valid(const char* Data){
 	char* TimeData = strchr(Data, ':');
+	if (TimeData == NULL) return ;
+	if ( strlen(TimeData + 1) != 13 ) return ;  //检测字符串长度是否正确
 	TimeValid = ClockTime_Parse(TimeData + 1);
 	
-}     			
+}     				
 
 //返回 分秒
 uint8_t Get_MinAndSec(ClockTime_t* Time) {

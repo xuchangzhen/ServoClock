@@ -20,6 +20,8 @@
 #include "string.h"
 #include "USART_Test.h"
 
+static uint8_t AppOff_Flag = 0;
+
 //时钟应用初始化
 void ServoClockApp_Init(void) {
 	MyI2C1_Init();
@@ -37,50 +39,58 @@ void ServoClockApp_Init(void) {
 	LED_Green_OFF();
 	LED_Yellow_OFF();
 	
-	AppMode = SERVO_MODE_RUN;
+	AppMode = APP_MODE_RUN;
 }
 
 
 void ServoClockApp_Process(void){  //程序进程
-	if (AppMode == SERVO_MODE_RUN) 				    Clock_Run();   			 //运行态           
-	else if (AppMode == SERVO_MODE_CALIBRATE_ON) 	Clock_CalibrationOn();   //校准态             
-	else if (AppMode == SERVO_MODE_CALIBRATE_OFF)   Clock_CalibrationOff();  //校准态
-	else if (AppMode == SERVO_MODE_RUN)				Clock_Off();			 //关闭运行				
+	if (AppMode == APP_MODE_RUN) 				    Clock_Run();   			 //运行态           
+	else if (AppMode == APP_MODE_CALIBRATE_ON) 		Clock_CalibrationOn();   //校准态             
+	else if (AppMode == APP_MODE_CALIBRATE_OFF)   	Clock_CalibrationOff();  //校准态
+	else if (AppMode == APP_MODE_OFF)				Clock_Off();			 //关闭运行				
 }    
 
 void Clock_Run(void){  //舵机运行状态
 	CommandParse_USART1();
 	CommandParse_USART2();
-	if (CommandMode == COMMANDPARSE_ADDJUST_PWM ) AppMode = SERVO_MODE_CALIBRATE_ON;  //进入校准模式
-	else if (CommandMode == COMMANDPARSE_STOP) 	  AppMode = SERVO_MODE_RUN; 		  //进入校准模式
-	else if (TimeValid) {  															  //展示时间
+	if (CommandMode == COMMANDPARSE_ADDJUST_PWM ) AppMode = APP_MODE_CALIBRATE_ON;  //进入校准模式
+	else if (CommandMode == COMMANDPARSE_STOP) 	  Clock_Off();		  				//进入校准模式
+	else if (TimeValid) {  															//展示时间
 		TimeValid = 0;
 		Show_Time();
 	}
 	
-	CommandMode = COMMANDPARSE_NONE;  //避免阻塞
+	CommandMode = COMMANDPARSE_NONE;  //避免校准阻塞
 } 		
 
 void Clock_Off(void) {  //关闭运行
+	AppMode = APP_MODE_OFF; 
 	CommandParse_USART2();
-	Clock_Off();
+	if (AppOff_Flag == 0) {  //避免重复执行函数
+		Servo_Off();
+		AppOff_Flag = 1;
+	}
 	
-	if (CommandMode == COMMANDPARSE_START) AppMode = SERVO_MODE_RUN;
+	if (CommandMode == COMMANDPARSE_START) {  //重新处于开启状态
+		AppOff_Flag = 0;
+		AppMode = APP_MODE_RUN;
+	}
 }
 
 
 void Clock_CalibrationOn(void) {  		//网页校准ON数据
+	CommandParse_USART2();
+	if (CommandMode == COMMANDPARSE_TIME) AppMode = APP_MODE_RUN;  //退出校准模式
 	if (SerialRxFlag != 1) return ;     //等待校准位到来 
 
-	CommandParse_USART2();
 	if (CommandMode == COMMANDPARSE_ADDJUST_PWM) {  //获取到校准信号
 		ServoCalibration_On();
 	}else if (CommandMode == COMMANDPARSE_SAVE) {
 		LED_Yellow_ON();
-		AppMode = SERVO_MODE_CALIBRATE_OFF;
+		AppMode = APP_MODE_CALIBRATE_OFF;
 	}else if (CommandMode == COMMANDPARSE_TIME) {  //读取到时间指令 恢复显示时间
-		AppMode = SERVO_MODE_RUN;
-	} 
+		AppMode = APP_MODE_RUN;
+	}
 
 	if (MyKey_GetPressed(GPIOB, GPIO_Pin_15) == 1) {  //舵机状态切换
 		ServoToggle(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
@@ -104,7 +114,7 @@ void Clock_CalibrationOff(void) {  //网页校准ON数据
 		ServoCalibration_Save(ServoCaliBration, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 		LED_Green_OFF();
 		LED_Yellow_OFF();
-		AppMode = SERVO_MODE_CALIBRATE_ON;
+		AppMode = APP_MODE_CALIBRATE_ON;
 		SerialRxFlag = 0;
 	}
 	CommandMode = COMMANDPARSE_NONE;
