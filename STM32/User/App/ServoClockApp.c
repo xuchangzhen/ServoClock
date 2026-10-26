@@ -90,6 +90,10 @@ void Clock_CalibrationOn(void) {  		//网页校准ON数据
 		return ;
 	}
 	
+	if (MyKey_GetPressed(GPIOB, GPIO_Pin_15) == 1) {  //舵机状态切换 主要用于检测舵机位置是否正确
+		ServoToggle(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
+	}
+	
 	if (SerialRxFlag != 1) {  //等待校准位到来 
 		CommandMode = COMMANDPARSE_NONE;  //避免执行过期命令
 		return ;  
@@ -104,9 +108,6 @@ void Clock_CalibrationOn(void) {  		//网页校准ON数据
 		AppMode = APP_MODE_RUN;
 	}
 
-	if (MyKey_GetPressed(GPIOB, GPIO_Pin_15) == 1) {  //舵机状态切换
-		ServoToggle(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
-	}
 	
 	CommandMode = COMMANDPARSE_NONE;
 }
