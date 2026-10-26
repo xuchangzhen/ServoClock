@@ -12,7 +12,7 @@ typedef enum {  //APP运行状态
 	APP_MODE_ERROR
 } ServoApp_Mode;
 
-static ServoApp_Mode AppMode = APP_MODE_ERROR;
+extern ServoApp_Mode AppMode;
 
 void ServoClockApp_Init(void);      //时钟应用初始化
 void ServoClockApp_Process(void);   //程序进程

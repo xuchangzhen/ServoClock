@@ -20,7 +20,7 @@ void CommandParse_USART1(void) {  //USART1  接收舵机校准编号
 			End != Buffer && *End == '\0'
 		) {  //判断获取到的参数是否合法
 			LED_Green_ON();
-			CommandMode = COMMANDPARSE_ADDJUST_PWM;
+			//CommandMode = COMMANDPARSE_ADDJUST_PWM;
 		}else SerialRxFlag = 0;
 	}
 	

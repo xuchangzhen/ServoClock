@@ -21,6 +21,7 @@
 #include "USART_Test.h"
 
 static uint8_t AppOff_Flag = 0;
+ServoApp_Mode AppMode = APP_MODE_ERROR;
 
 //时钟应用初始化
 void ServoClockApp_Init(void) {
@@ -79,9 +80,20 @@ void Clock_Off(void) {  //关闭运行
 
 
 void Clock_CalibrationOn(void) {  		//网页校准ON数据
+	CommandParse_USART1();
 	CommandParse_USART2();
-	if (CommandMode == COMMANDPARSE_TIME) AppMode = APP_MODE_RUN;  //退出校准模式
-	if (SerialRxFlag != 1) return ;     //等待校准位到来 
+	if (CommandMode == COMMANDPARSE_TIME) {  //退出校准模式
+		
+		AppMode = APP_MODE_RUN;  
+		CommandMode = COMMANDPARSE_NONE;
+		SerialRxFlag = 0;
+		return ;
+	}
+	
+	if (SerialRxFlag != 1) {  //等待校准位到来 
+		CommandMode = COMMANDPARSE_NONE;  //避免执行过期命令
+		return ;  
+	}   
 
 	if (CommandMode == COMMANDPARSE_ADDJUST_PWM) {  //获取到校准信号
 		ServoCalibration_On();
