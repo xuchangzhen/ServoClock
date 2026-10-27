@@ -1,5 +1,4 @@
 #include "WebServe.h"
-#include "CommandService.h"
 
 #include "esp_http_server.h"
 #include "esp_log.h"
@@ -12,16 +11,6 @@ extern const char HTMLStart[] asm("_binary_index_html_start");
 static const char* TAG = "WEB";
 static httpd_handle_t WebServer = NULL;
 
-// 不同 URI 对应的控制命令
-static WebCommand_t PWMAdd1Command  = WEB_COMMAND_PWM_ADD_1;
-static WebCommand_t PWMSub1Command  = WEB_COMMAND_PWM_SUB_1;
-static WebCommand_t PWMAdd10Command = WEB_COMMAND_PWM_ADD_10;
-static WebCommand_t PWMSub10Command = WEB_COMMAND_PWM_SUB_10;
-static WebCommand_t PWMSaveCommand  = WEB_COMMAND_SAVE;
-
-static WebCommand_t ShowYearCommand   = WEB_COMMAND_SHOW_YEAR;
-static WebCommand_t ShowHourCommand   = WEB_COMMAND_SHOW_HOUR;
-static WebCommand_t ShowMinuteCommand = WEB_COMMAND_SHOW_MINUTE; 
 
 static esp_err_t RootHandler(httpd_req_t* Request) {  //网页根目录请求
     esp_err_t Result;
@@ -37,21 +26,19 @@ static esp_err_t RootHandler(httpd_req_t* Request) {  //网页根目录请求
     return httpd_resp_sendstr(Request, HTMLStart);
 }
 
+
 //http请求处理
 static esp_err_t PWMCommandHandler(httpd_req_t* Request) {
-    WebCommand_t Command;
+    WebCommand_t Command = WEB_COMMAND_NONE;
     esp_err_t Result;
 
-    //获取uri注册传入地址
-    if (Request->user_ctx == NULL) {
-        return httpd_resp_send_err(
-            Request,
-            HTTPD_500_INTERNAL_SERVER_ERROR,
-            "Invalid handler context"
-        );
+    for (int i = 0; i < sizeof(CommandRoutes) / sizeof(WebRoute_t); ++i) {
+        if (strcmp(Request->uri, CommandRoutes[i].URI) == 0) {
+            Command = CommandRoutes[i].Command;
+            break;
+        }
     }
 
-    Command = *(WebCommand_t*)Request->user_ctx;
     ESP_LOGI(TAG, "Get Command: %d", (int)Command);
     
     Result = CommandService_Enqueue(Command);
@@ -79,68 +66,19 @@ static esp_err_t PWMCommandHandler(httpd_req_t* Request) {
 
 
 //注册http接口
-httpd_uri_t PWMAdd1URI = {
-    .uri = "/api/pwm/add1",
+httpd_uri_t CommandURI = {  //同一请求入口
+    .uri = "/api/*",
     .method = HTTP_POST,
     .handler = PWMCommandHandler,
-    .user_ctx = &PWMAdd1Command
-};
-
-httpd_uri_t PWMSub1URI = {
-    .uri = "/api/pwm/sub1",
-    .method = HTTP_POST,
-    .handler = PWMCommandHandler,
-    .user_ctx = &PWMSub1Command
-};
-
-httpd_uri_t PWMAdd10URI = {
-    .uri = "/api/pwm/add10",
-    .method = HTTP_POST,
-    .handler = PWMCommandHandler,
-    .user_ctx = &PWMAdd10Command
-};
-
-httpd_uri_t PWMSub10URI = {
-    .uri = "/api/pwm/sub10",
-    .method = HTTP_POST,
-    .handler = PWMCommandHandler,
-    .user_ctx = &PWMSub10Command
-};
-
-httpd_uri_t PWMSaveURI = {
-    .uri = "/api/pwm/Save",
-    .method = HTTP_POST,
-    .handler = PWMCommandHandler,
-    .user_ctx = &PWMSaveCommand
-};
-
-httpd_uri_t ShowYearURI = {
-    .uri = "/api/Data/Year",
-    .method = HTTP_POST,
-    .handler = PWMCommandHandler,
-    .user_ctx = &ShowYearCommand
-};
-
-httpd_uri_t ShowHourURI = {
-    .uri = "/api/Data/Hour",
-    .method = HTTP_POST,
-    .handler = PWMCommandHandler,
-    .user_ctx = &ShowHourCommand
+    .user_ctx = NULL
 };
 
 
-httpd_uri_t ShowMinuteURI = {
-    .uri = "/api/Data/Minute",
-    .method = HTTP_POST,
-    .handler = PWMCommandHandler,
-    .user_ctx = &ShowMinuteCommand
-};
-
-
-void WebServe_Start(void) {
+void WebServe_Start(void) {  //启动WebServe
     httpd_config_t Config = HTTPD_DEFAULT_CONFIG();
 
     Config.max_uri_handlers = 16;  //添加URI注册器
+    Config.uri_match_fn = httpd_uri_match_wildcard;  //通配符处理请求
 
     httpd_uri_t RootURI = {
         .uri = "/",
@@ -153,14 +91,12 @@ void WebServe_Start(void) {
 
     if (httpd_start(&WebServer, &Config) == ESP_OK) {
         httpd_register_uri_handler(WebServer, &RootURI);
-        httpd_register_uri_handler(WebServer,&PWMAdd1URI);
-        httpd_register_uri_handler(WebServer,&PWMSub1URI);
-        httpd_register_uri_handler(WebServer,&PWMAdd10URI);
-        httpd_register_uri_handler(WebServer,&PWMSub10URI);
-        httpd_register_uri_handler(WebServer,&PWMSaveURI);
-        httpd_register_uri_handler(WebServer,&ShowYearURI);
-        httpd_register_uri_handler(WebServer,&ShowHourURI);
-        httpd_register_uri_handler(WebServer,&ShowMinuteURI);
+        esp_err_t Result = httpd_register_uri_handler(WebServer,&CommandURI);
+
+        if (Result != ESP_OK) {
+            ESP_LOGI(TAG, "%s", Result);
+            return ;
+        }
 
         ESP_LOGI(TAG, "Web Serve Started");
 
@@ -169,7 +105,7 @@ void WebServe_Start(void) {
     }
 }
 
-void WebServe_Stop(void) {
+void WebServe_Stop(void) {  //停止WebServe
     if (WebServer == NULL) return;
     
     httpd_stop(WebServer);

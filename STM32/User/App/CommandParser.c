@@ -42,7 +42,7 @@ void CommandParse_USART2(void) {  //USART2
 			CommandMode  = COMMANDPARSE_TIME;  
 		}else if (strncmp(USART2_Buffer, "PWM:", 4) == 0) {  //获取到的数据为PWM调整信号
 			CommandMode = COMMANDPARSE_ADDJUST_PWM;
-		}else if ( (strncmp(USART2_Buffer, "Save", 4) == 0) || (MyKey_GetPressed(GPIOB, GPIO_Pin_13) == 1) ) {  //获取到数据保存信号
+		}else if ( (strncmp(USART2_Buffer, "SAVE", 4) == 0) || (MyKey_GetPressed(GPIOB, GPIO_Pin_13) == 1) ) {  //获取到数据保存信号
 			CommandMode = COMMANDPARSE_SAVE;
 		}else {  //校准时期不允许其余指令到来
 			BufferFlag = 0;

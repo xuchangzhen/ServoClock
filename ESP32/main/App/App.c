@@ -21,13 +21,21 @@ void App_Init(void) {
     Time_Get();
 
     char Data[uart_Send_Length];
-    while (1) {
-        CommandService_Process();
-        // vTaskDelay(pdMS_TO_TICKS(50));
-        TimeToSTM32(Data, uart_Send_Length);
-        UART2_SendData(Data, uart_Send_Length);    
 
-        vTaskDelay(pdMS_TO_TICKS(1000));
+    TickType_t LastSendTick = xTaskGetTickCount();  //获取当前tick
+
+    while (1) {
+        CommandService_Process();  //指令进程
+        
+        TickType_t NowTick = xTaskGetTickCount();
+        if ((TickType_t)(NowTick - LastSendTick) >= pdMS_TO_TICKS(1000)) {  //1s发送一次时间
+            TimeToSTM32(Data, uart_Send_Length);
+            UART2_SendData(Data, strlen(Data));    
+
+            LastSendTick = NowTick;
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(10));
 
     }
 }

@@ -6,7 +6,7 @@
 #include "esp_log.h"
 
 static const char* TAG = "COMMAND";
-static QueueSetHandle_t WebCommandQueue = NULL;
+static QueueHandle_t WebCommandQueue = NULL;
 
 esp_err_t CommandService_Init(void) {  //初始化freertos队列
     if (WebCommandQueue != NULL) return ESP_OK;
