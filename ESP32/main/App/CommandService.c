@@ -49,27 +49,41 @@ void CommandService_Process(void) {  //命令解析
         switch (Command) {
             
             case WEB_COMMAND_PWM_ADD_1:
-                UART2_SendData("PWM:+1\n", 7);
+                UART2_SendData("#PWM:+1@\n", 9);
                 break;
 
             case WEB_COMMAND_PWM_SUB_1:
-                UART2_SendData("PWM:-1\n", 7);
+                UART2_SendData("#PWM:-1@\n", 9);
                 break;
 
             case WEB_COMMAND_PWM_ADD_10:
-                UART2_SendData("PWM:+10\n", 8);
+                UART2_SendData("#PWM:+10@\n", 10);
                 break;
 
             case WEB_COMMAND_PWM_SUB_10:
-                UART2_SendData("PWM:-10\n", 8);
+                UART2_SendData("#PWM:-10@\n", 10);
                 break;
 
             case WEB_COMMAND_SAVE:
-                UART2_SendData("Save\n", 5);
+                UART2_SendData("#SAVE@\n", 7);
                 break;
+
+            case WEB_COMMAND_SHOW_YEAR:
+                UART2_SendData("#YEAR@\n", 7);
+                break;
+
+            case WEB_COMMAND_SHOW_HOUR:
+                UART2_SendData("#HOUR@\n", 7);
+                break;
+
+            case WEB_COMMAND_SHOW_MINUTE:
+                UART2_SendData("#MINUTE@\n", 9);
+                break;
+
             default:
                 break;
         }
+        
         ESP_LOGI(TAG, "Dispatched Command %d", (int)Command);
     }
     // vTaskDelay(pdMS_TO_TICKS(10));

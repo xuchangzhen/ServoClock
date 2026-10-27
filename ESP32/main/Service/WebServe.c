@@ -19,6 +19,10 @@ static WebCommand_t PWMAdd10Command = WEB_COMMAND_PWM_ADD_10;
 static WebCommand_t PWMSub10Command = WEB_COMMAND_PWM_SUB_10;
 static WebCommand_t PWMSaveCommand  = WEB_COMMAND_SAVE;
 
+static WebCommand_t ShowYearCommand   = WEB_COMMAND_SHOW_YEAR;
+static WebCommand_t ShowHourCommand   = WEB_COMMAND_SHOW_HOUR;
+static WebCommand_t ShowMinuteCommand = WEB_COMMAND_SHOW_MINUTE; 
+
 static esp_err_t RootHandler(httpd_req_t* Request) {  //网页根目录请求
     esp_err_t Result;
     
@@ -110,9 +114,33 @@ httpd_uri_t PWMSaveURI = {
     .user_ctx = &PWMSaveCommand
 };
 
+httpd_uri_t ShowYearURI = {
+    .uri = "/api/Data/Year",
+    .method = HTTP_POST,
+    .handler = PWMCommandHandler,
+    .user_ctx = &ShowYearCommand
+};
+
+httpd_uri_t ShowHourURI = {
+    .uri = "/api/Data/Hour",
+    .method = HTTP_POST,
+    .handler = PWMCommandHandler,
+    .user_ctx = &ShowHourCommand
+};
+
+
+httpd_uri_t ShowMinuteURI = {
+    .uri = "/api/Data/Minute",
+    .method = HTTP_POST,
+    .handler = PWMCommandHandler,
+    .user_ctx = &ShowMinuteCommand
+};
+
 
 void WebServe_Start(void) {
     httpd_config_t Config = HTTPD_DEFAULT_CONFIG();
+
+    Config.max_uri_handlers = 16;  //添加URI注册器
 
     httpd_uri_t RootURI = {
         .uri = "/",
@@ -130,6 +158,9 @@ void WebServe_Start(void) {
         httpd_register_uri_handler(WebServer,&PWMAdd10URI);
         httpd_register_uri_handler(WebServer,&PWMSub10URI);
         httpd_register_uri_handler(WebServer,&PWMSaveURI);
+        httpd_register_uri_handler(WebServer,&ShowYearURI);
+        httpd_register_uri_handler(WebServer,&ShowHourURI);
+        httpd_register_uri_handler(WebServer,&ShowMinuteURI);
 
         ESP_LOGI(TAG, "Web Serve Started");
 

@@ -10,22 +10,24 @@
 #include "esp_err.h"
 #include "esp_log.h"
 
+#define uart_Send_Length 32U
+
 static const char* TAG = "APP";
 
 void App_Init(void) {
     UART2_Init();
     ESP_ERROR_CHECK(CommandService_Init());
     WIFI_Init();
-    //Time_Get();
+    Time_Get();
 
-    char Data[16];
+    char Data[uart_Send_Length];
     while (1) {
         CommandService_Process();
-        vTaskDelay(pdMS_TO_TICKS(50));
-        // TimeToSTM32(Data, 10);
-        // UART2_SendData(Data, 9);    
+        // vTaskDelay(pdMS_TO_TICKS(50));
+        TimeToSTM32(Data, uart_Send_Length);
+        UART2_SendData(Data, uart_Send_Length);    
 
-        // vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(1000));
 
     }
 }

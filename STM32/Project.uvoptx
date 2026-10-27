@@ -173,17 +173,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>USART2_Buffer</ItemText>
+          <ItemText>\\Project\User/App/ClockTime.c\LastTime</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>Time</ItemText>
-        </Ww>
-        <Ww>
-          <count>2</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>Data</ItemText>
+          <ItemText>\\Project\User/BSP/MyUSART.c\USART2_Buffer</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
@@ -194,6 +189,14 @@
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
+      <MemoryWindow2>
+        <Mm>
+          <WinNumber>2</WinNumber>
+          <SubType>0</SubType>
+          <ItemText>\\Project\User/BSP/MyUSART.c\USART2_Buffer</ItemText>
+          <AccSizeX>0</AccSizeX>
+        </Mm>
+      </MemoryWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

@@ -62,8 +62,8 @@ void Time_Print(void) {
 
     localtime_r(&Now, &LocalTime);
 
-    ESP_LOGI(TAG, "Beijing Time: %02d:%02d:%02d", LocalTime.tm_hour, LocalTime.tm_min,
-             LocalTime.tm_sec);
+    ESP_LOGI(TAG, "Beijing Time: %02d:%02d:%02d/%04d", LocalTime.tm_hour, LocalTime.tm_min,
+             LocalTime.tm_sec, LocalTime.tm_year);
 }
 
 //将时间转化为发送至stm32格式
@@ -78,10 +78,11 @@ void TimeToSTM32(char* Data, uint8_t Len) {
     snprintf(
         Data,
         Len,
-        "%02d:%02d:%02d\n",
+        "#TIME:%02d:%02d:%02d/%04d@\n",
         LocalTime.tm_hour,
         LocalTime.tm_min,
-        LocalTime.tm_sec
+        LocalTime.tm_sec,
+        LocalTime.tm_year + 1900
     );
 
     ESP_LOGI(TAG, "Send: %s", Data);
