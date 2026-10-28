@@ -27,11 +27,11 @@ void CommandService_Process(void) {  //命令解析
                 break;
 
             case WEB_COMMAND_SAVE:
-                UART2_SendData("#SAVE@\n", strlen("#SAVE@\n") - 1);
+                UART2_SendData("#SAVE@\n", strlen("#SAVE@\n"));
                 break;
 
             case WEB_COMMAND_PWM_END:
-                UART2_SendData("#ADJUST:END@\n", strlen("#ADJUST:END@\n") - 1);
+                UART2_SendData("#ADJUST:END@\n", strlen("#ADJUST:END@\n"));
             break;
 
             case WEB_COMMAND_SHOW_YEAR:
@@ -50,7 +50,9 @@ void CommandService_Process(void) {  //命令解析
                 break;
         }
         
-        ESP_LOGI(TAG, "Dispatched %s", Frame);
+        ESP_LOGI(TAG, "Dispatched: Type=%d Value=%d",
+         (int)Command.Type,
+         (int)Command.Value);
     }
     // vTaskDelay(pdMS_TO_TICKS(10));
 }

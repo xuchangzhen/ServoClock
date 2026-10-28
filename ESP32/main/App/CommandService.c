@@ -28,7 +28,7 @@ esp_err_t CommandService_Init(void) {  //初始化freertos队列
 esp_err_t CommandService_Enqueue(WebCommand_t Command) {  //命令入队
     if (WebCommandQueue == NULL) return ESP_ERR_INVALID_STATE;
 
-    if (Command.Type <= WEB_COMMAND_NONE || Command.Type > WEB_COMMAND_COUTN) {
+    if (Command.Type <= WEB_COMMAND_NONE || Command.Type >= WEB_COMMAND_COUTN) {
         ESP_LOGE(TAG, "Invalid CommandType: %d, Max: %d",
             (int)Command.Type, (int)WEB_COMMAND_COUTN);
             return  ESP_ERR_INVALID_ARG;
