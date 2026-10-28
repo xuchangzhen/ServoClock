@@ -5,6 +5,19 @@
 
 #include "esp_heap_caps.h"
 
+static const WebRoute_t CommandRoutes[] = {
+    {"/api/pwm/start", {WEB_COMMAND_PWM_START, 0}},
+    {"/api/pwm/add1", {WEB_COMMAND_PWM_ADJUST, +1}},
+    {"/api/pwm/sub1", {WEB_COMMAND_PWM_ADJUST, -1}},
+    {"/api/pwm/add10", {WEB_COMMAND_PWM_ADJUST, +10}},
+    {"/api/pwm/sub10", {WEB_COMMAND_PWM_ADJUST, -10}},
+    {"/api/pwm/Save", {WEB_COMMAND_SAVE, 0}},
+    {"/api/pwm/end", {WEB_COMMAND_PWM_END, 0}},
+    {"/api/Data/Year", {WEB_COMMAND_SHOW_YEAR, 0}},
+    {"/api/Data/Hour", {WEB_COMMAND_SHOW_HOUR, 0}},
+    {"/api/Data/Minute", {WEB_COMMAND_SHOW_MINUTE, 0}}
+};
+
 //引用编译时嵌入固件的网页数据
 extern const char HTMLStart[] asm("_binary_index_html_start");
 
@@ -29,7 +42,7 @@ static esp_err_t RootHandler(httpd_req_t* Request) {  //网页根目录请求
 
 //http请求处理
 static esp_err_t PWMCommandHandler(httpd_req_t* Request) {
-    WebCommand_t Command = WEB_COMMAND_NONE;
+    WebCommand_t Command = {WEB_COMMAND_NONE, 0};
     esp_err_t Result;
 
     for (int i = 0; i < sizeof(CommandRoutes) / sizeof(WebRoute_t); ++i) {
@@ -39,7 +52,7 @@ static esp_err_t PWMCommandHandler(httpd_req_t* Request) {
         }
     }
 
-    ESP_LOGI(TAG, "Get Command: %d", (int)Command);
+    ESP_LOGI(TAG, "Get Command: %d, Value: %+d", (int)Command.Type, (int)Command.Value);
     
     Result = CommandService_Enqueue(Command);
 
@@ -94,9 +107,9 @@ void WebServe_Start(void) {  //启动WebServe
         esp_err_t Result = httpd_register_uri_handler(WebServer,&CommandURI);
 
         if (Result != ESP_OK) {
-            ESP_LOGI(TAG, "%s", Result);
+            ESP_LOGI(TAG, "%s", esp_err_to_name(Result));
             return ;
-        }
+        }   
 
         ESP_LOGI(TAG, "Web Serve Started");
 

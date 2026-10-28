@@ -168,6 +168,16 @@
           <WinNumber>1</WinNumber>
           <ItemText>CommandMode</ItemText>
         </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>SerialRxFlag</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>SerialRxData</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

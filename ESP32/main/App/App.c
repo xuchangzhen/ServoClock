@@ -4,6 +4,7 @@
 #include "WebServe.h"
 #include "MyWIFI.h"
 #include "CommandService.h"
+#include "CommandProtocol.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -28,10 +29,10 @@ void App_Init(void) {
         CommandService_Process();  //指令进程
         
         TickType_t NowTick = xTaskGetTickCount();
-        if ((TickType_t)(NowTick - LastSendTick) >= pdMS_TO_TICKS(1000)) {  //1s发送一次时间
+        if ((TickType_t)(NowTick - LastSendTick) >= pdMS_TO_TICKS(1000) && (App_Mode == APP_MODE_TIME) ) {  //1s发送一次时间
             TimeToSTM32(Data, uart_Send_Length);
             UART2_SendData(Data, strlen(Data));    
-
+    
             LastSendTick = NowTick;
         }
 

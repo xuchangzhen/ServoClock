@@ -8,11 +8,13 @@
 <body>
     <h1>Servo Calibration</h1>
 
+    <button onclick="send('/api/pwm/start')">START</button>
     <button onclick="send('/api/pwm/sub10')">-10</button>
     <button onclick="send('/api/pwm/sub1')">-1</button>
     <button onclick="send('/api/pwm/add1')">+1</button>
     <button onclick="send('/api/pwm/add10')">+10</button>
     <button onclick="send('/api/pwm/Save')">Save</button>
+    <button onclick="send('/api/pwm/end')">END</button>
     <button onclick="send('/api/Data/Year')">Year</button>
     <button onclick="send('/api/Data/Hour')">Hour</button>
     <button onclick="send('/api/Data/Minute')">Minute</button>
