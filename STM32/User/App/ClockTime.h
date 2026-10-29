@@ -10,11 +10,14 @@ typedef struct {
 	uint8_t   Minite;
 	uint8_t   Hour;
 	uint16_t  Year;
+	uint8_t   Mon;
+	uint8_t   Day;
 } ClockTime_t;
 
 //显示模式
 typedef enum {
 	DISPLAY_YEAR,
+	DISPLAY_MONTH,
     DISPLAY_HOUR,
     DISPLAY_MINUTE
 } DisplayMode_t;
@@ -26,6 +29,7 @@ uint8_t ClockTime_Parse(const char* Data);  //检验时间是否合法
 uint8_t Get_MinAndSec(ClockTime_t* Time);   //获取分 秒
 uint8_t Get_HourAndMin(ClockTime_t* Time);  //获取时 分
 uint8_t Get_Year(ClockTime_t* Time);        //获取年份
+uint8_t Get_MonAndDay(ClockTime_t* Time);   //获取月份 日期
 void ClockTime_Valid(const char* Data);     //时间是否可用
 
 #endif

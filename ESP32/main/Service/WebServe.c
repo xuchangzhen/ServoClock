@@ -14,6 +14,7 @@ static const WebRoute_t CommandRoutes[] = {
     {"/api/pwm/Save", {WEB_COMMAND_SAVE, 0}},
     {"/api/pwm/end", {WEB_COMMAND_PWM_END, 0}},
     {"/api/Data/Year", {WEB_COMMAND_SHOW_YEAR, 0}},
+    {"/api/Data/Month", {WEB_COMMAND_SHOW_MONTH, 0}},
     {"/api/Data/Hour", {WEB_COMMAND_SHOW_HOUR, 0}},
     {"/api/Data/Minute", {WEB_COMMAND_SHOW_MINUTE, 0}}
 };

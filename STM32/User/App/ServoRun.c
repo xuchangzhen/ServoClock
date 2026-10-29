@@ -177,9 +177,28 @@ void Show_Year(void) {
 	}
 }
 
+//获取月份 日期
+void Show_MonAndDay(void){
+	ClockTime_t Time;
+	if ( Get_MonAndDay(&Time)== 0) return ;
+	
+	//展示数据数组
+	uint8_t NUM[4];
+	NUM[0] = Time.Mon / 10;
+	NUM[1] = Time.Mon % 10;
+	NUM[2] = Time.Day / 10;
+	NUM[3] = Time.Day % 10;
+	
+	//按位展示数据
+	for (int i = 0; i < Digit; ++i ) {
+		ServoShowNum(NUM[i], i);
+	}
+}  
+
 //根据实际指令显示
 void Show_Time(void) {
 	if 		(DisplayMode == DISPLAY_YEAR)	  Show_Year();
+	else if (DisplayMode == DISPLAY_MONTH)    Show_MonAndDay();
 	else if (DisplayMode == DISPLAY_HOUR) 	  Show_HourAndMin();
 	else if (DisplayMode == DISPLAY_MINUTE)   Show_MinAndSec();
 }

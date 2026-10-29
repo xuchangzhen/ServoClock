@@ -78,11 +78,13 @@ void TimeToSTM32(char* Data, uint8_t Len) {
     snprintf(
         Data,
         Len,
-        "#TIME:%02d:%02d:%02d/%04d@\n",
+        "#TIME:%02d:%02d:%02d/%04d/%02d.%02d@\n",
         LocalTime.tm_hour,
         LocalTime.tm_min,
         LocalTime.tm_sec,
-        LocalTime.tm_year + 1900
+        LocalTime.tm_year + 1900,
+        LocalTime.tm_mon + 1,
+        LocalTime.tm_mday
     );
 
     ESP_LOGI(TAG, "Send: %s", Data);

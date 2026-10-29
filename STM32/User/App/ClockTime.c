@@ -13,7 +13,7 @@ static uint8_t is_digit(uint8_t c) {
 
 //校验时钟数据
 uint8_t ClockTime_Parse(const char* Data) {
-	uint8_t Second, Minite, Hour;
+	uint8_t Second, Minite, Hour, Mon, Day;
 	uint16_t Year;
 	
 	if (Data == 0) return 0;
@@ -31,17 +31,22 @@ uint8_t ClockTime_Parse(const char* Data) {
 		!is_digit(Data[12]) 
 	) return 0;
 	
-	if (Data[2] != ':' || Data[5] != ':' || Data[8] != '/') return 0;
+	if (Data[2] != ':' || Data[5] != ':' || Data[8] != '/' || Data[13] != '/' || Data[16] != '.') return 0;
 	
 	Hour   = (Data[0] - '0') * 10 + Data[1] - '0';
 	Minite = (Data[3] - '0') * 10 + Data[4] - '0';
 	Second = (Data[6] - '0') * 10 + Data[7] - '0';
 	Year   = (Data[9] - '0') * 1000 + (Data[10] - '0') * 100 + 
 			 (Data[11] - '0') * 10 + Data[12] - '0';
+	Mon    = (Data[14] - '0') * 10 + (Data[15] - '0');
+	Day    = (Data[17] - '0') * 10 + (Data[18] - '0');
+	
 	
 	if (Second >= 60 || Minite >= 60 || Hour >= 24) return 0;
 	
 	LastTime.Year   = Year;
+	LastTime.Mon 	= Mon;
+	LastTime.Day	= Day;
 	LastTime.Hour 	= Hour;
 	LastTime.Minite = Minite;
 	LastTime.Second = Second;
@@ -55,7 +60,7 @@ uint8_t ClockTime_Parse(const char* Data) {
 void ClockTime_Valid(const char* Data){
 	char* TimeData = strchr(Data, ':');
 	if (TimeData == NULL) return ;
-	if ( strlen(TimeData + 1) != 13 ) return ;  //检测字符串长度是否正确
+	if ( strlen(TimeData + 1) != 19 ) return ;  //检测字符串长度是否正确
 	TimeValid = ClockTime_Parse(TimeData + 1);
 	
 }     				
@@ -77,5 +82,12 @@ uint8_t Get_HourAndMin(ClockTime_t* Time) {
 //获取年份
 uint8_t Get_Year(ClockTime_t* Time) {
 	Time->Year = LastTime.Year;
+	return 1;
+}
+
+//获取月份 日期
+uint8_t Get_MonAndDay(ClockTime_t* Time){
+	Time->Mon = LastTime.Mon;
+	Time->Day = LastTime.Day;
 	return 1;
 }

@@ -35,6 +35,7 @@ void ServoShowNum(uint8_t Num, uint8_t Digit_POS);              //根据断码�
 void Show_MinAndSec(void);                                      //展示 分 秒
 void Show_HourAndMin(void);  									//展示 时 分
 void Show_Year(void);  											//展示 年份 
+void Show_MonAndDay(void);										//展示月份 日期
 void Show_Time(void);											//根据实际指令显示
 	
 #endif

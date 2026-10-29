@@ -31,7 +31,8 @@ void App_Init(void) {
         TickType_t NowTick = xTaskGetTickCount();
         if ((TickType_t)(NowTick - LastSendTick) >= pdMS_TO_TICKS(1000) && (App_Mode == APP_MODE_TIME) ) {  //1s发送一次时间
             TimeToSTM32(Data, uart_Send_Length);
-            UART2_SendData(Data, strlen(Data));    
+            UART2_SendData(Data, strlen(Data))
+            ;    
     
             LastSendTick = NowTick;
         }

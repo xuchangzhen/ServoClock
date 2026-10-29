@@ -38,6 +38,10 @@ void CommandService_Process(void) {  //命令解析
                 UART2_SendData("#YEAR@\n", 7);
                 break;
 
+            case WEB_COMMAND_SHOW_MONTH:
+                UART2_SendData("#MONTH@\n", 8);
+                break;
+
             case WEB_COMMAND_SHOW_HOUR:
                 UART2_SendData("#HOUR@\n", 7);
                 break;

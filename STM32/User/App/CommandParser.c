@@ -65,6 +65,9 @@ void CommandParse_USART2(void) {  //USART2
 	if (strncmp(USART2_Buffer, "YEAR", 4) == 0) {
 		CommandMode = COMMANDPARSE_TIME;
 		DisplayMode = DISPLAY_YEAR;
+	}else if (strncmp(USART2_Buffer, "MONTH", 5) == 0) {
+		CommandMode = COMMANDPARSE_TIME;
+		DisplayMode = DISPLAY_MONTH;
 	}else if (strncmp(USART2_Buffer, "HOUR:", 4) == 0) {
 		CommandMode = COMMANDPARSE_TIME;
 		DisplayMode = DISPLAY_HOUR;
