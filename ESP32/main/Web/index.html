@@ -8,7 +8,9 @@
 <body>
     <h1>Servo Calibration</h1>
 
-    <button onclick="send('/api/pwm/start')">START</button>
+    <button onclick="send('/api/pwm/on')">ON</button>
+    <button onclick="send('/api/pwm/off')">OFF</button>
+    <button onclick="send('/api/pwm/calibration')">Cal</button>
     <button onclick="send('/api/pwm/sub10')">-10</button>
     <button onclick="send('/api/pwm/sub1')">-1</button>
     <button onclick="send('/api/pwm/add1')">+1</button>

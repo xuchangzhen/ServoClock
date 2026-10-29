@@ -15,8 +15,16 @@ void CommandService_Process(void) {  //命令解析
         //解析指令
         switch (CommandType) {
 
-            case WEB_COMMAND_PWM_START:
-                UART2_SendData("#ADJUST:START@\n", strlen("#ADJUST:START@\n") - 1);
+            case WEB_COMMAND_APP_ON:
+                UART2_SendData("#ON@\n", strlen("#ON@\n"));
+            break;
+
+            case WEB_COMMAND_APP_OFF:
+                UART2_SendData("#OFF@\n", strlen("#OFF@\n"));
+            break;
+
+            case WEB_COMMAND_PWM_CAL:
+                UART2_SendData("#ADJUST:START@\n", strlen("#ADJUST:START@\n"));
             break;
 
             case WEB_COMMAND_PWM_ADJUST:  //解析PWM命令
@@ -35,19 +43,19 @@ void CommandService_Process(void) {  //命令解析
             break;
 
             case WEB_COMMAND_SHOW_YEAR:
-                UART2_SendData("#YEAR@\n", 7);
+                UART2_SendData("#YEAR@\n", strlen("#YEAR@\n"));
                 break;
 
             case WEB_COMMAND_SHOW_MONTH:
-                UART2_SendData("#MONTH@\n", 8);
+                UART2_SendData("#MONTH@\n", strlen("#MONTH@\n"));
                 break;
 
             case WEB_COMMAND_SHOW_HOUR:
-                UART2_SendData("#HOUR@\n", 7);
+                UART2_SendData("#HOUR@\n", strlen("#HOUR@\n"));
                 break;
 
             case WEB_COMMAND_SHOW_MINUTE:
-                UART2_SendData("#MINUTE@\n", 9);
+                UART2_SendData("#MINUTE@\n", strlen("#MINUTE@\n"));
                 break;
 
             default:

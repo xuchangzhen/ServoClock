@@ -9,8 +9,8 @@ typedef enum{  //舵机运行状态
 	COMMANDPARSE_ADDJUST_PWM,
 	COMMANDPARSE_SAVE,
 	COMMANDPARSE_TIME,
-	COMMANDPARSE_START,
-	COMMANDPARSE_STOP
+	COMMANDPARSE_ON,
+	COMMANDPARSE_OFF
 } ParseCommand_t;
 
 extern ParseCommand_t CommandMode; 			//命令状态

@@ -55,7 +55,7 @@ void Clock_Run(void){  //舵机运行状态
 	CommandParse_USART1();
 	CommandParse_USART2();
 	if (CommandMode == COMMANDPARSE_ADDJUST_PWM ) AppMode = APP_MODE_CALIBRATE_ON;  //进入校准模式
-	else if (CommandMode == COMMANDPARSE_STOP) 	  Clock_Off();		  				//进入校准模式
+	else if (CommandMode == COMMANDPARSE_OFF) 	  Clock_Off();		  				//关闭时钟
 	else if (TimeValid) {  															//展示时间
 		TimeValid = 0;
 		Show_Time();
@@ -72,7 +72,7 @@ void Clock_Off(void) {  //关闭运行
 		AppOff_Flag = 1;
 	}
 	
-	if (CommandMode == COMMANDPARSE_START) {  //重新处于开启状态
+	if (CommandMode == COMMANDPARSE_ON) {  //重新处于开启状态
 		AppOff_Flag = 0;
 		AppMode = APP_MODE_RUN;
 	}

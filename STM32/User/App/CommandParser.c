@@ -55,10 +55,10 @@ void CommandParse_USART2(void) {  //USART2
 		CommandMode = COMMANDPARSE_ADDJUST_PWM;
 	}else if (strncmp(USART2_Buffer, "TIME:", 5) == 0) {  //时间到来
 		ClockTime_Valid(USART2_Buffer);
-	}else if (strncmp(USART2_Buffer, "START", 5) == 0) {  //时钟开启
-		CommandMode = COMMANDPARSE_START;
-	}else if (strncmp(USART2_Buffer, "STOP", 4) == 0) {  //时钟关闭
-		CommandMode = COMMANDPARSE_STOP;
+	}else if (strncmp(USART2_Buffer, "ON", 2) == 0) {  //时钟开启
+		CommandMode = COMMANDPARSE_ON;
+	}else if (strncmp(USART2_Buffer, "OFF", 3) == 0) {  //时钟关闭
+		CommandMode = COMMANDPARSE_OFF;
 	}
 	
 	//解析显示指令

@@ -6,7 +6,9 @@
 #include "esp_heap_caps.h"
 
 static const WebRoute_t CommandRoutes[] = {
-    {"/api/pwm/start", {WEB_COMMAND_PWM_START, 0}},
+    {"/api/pwm/on", {WEB_COMMAND_APP_ON, 0}},
+    {"/api/pwm/off", {WEB_COMMAND_APP_OFF, 0}},
+    {"/api/pwm/calibration", {WEB_COMMAND_PWM_CAL, 0}},
     {"/api/pwm/add1", {WEB_COMMAND_PWM_ADJUST, +1}},
     {"/api/pwm/sub1", {WEB_COMMAND_PWM_ADJUST, -1}},
     {"/api/pwm/add10", {WEB_COMMAND_PWM_ADJUST, +10}},
