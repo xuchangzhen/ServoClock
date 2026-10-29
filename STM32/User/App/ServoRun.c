@@ -45,6 +45,7 @@ void Servo_Off(void) {
 		for (int j = 0; j < 4; ++j ) {
 			uint8_t pos = i + 7 * j;
 			PCA9685_SETPWM(pos, 0, ServoCaliBration[pos].PWMOff);
+			PWM_NOW[pos] = ServoCaliBration[pos].PWMOff;
 		}
 		Delay_ms(180);
 	}
@@ -54,6 +55,7 @@ void Servo_Off(void) {
 	for (int i = 0; i < 4; ++i ) {
 		uint8_t pos = 7 + 7 * i - 1;
 		PCA9685_SETPWM(pos, 0, ServoCaliBration[pos].PWMOn);
+		PWM_NOW[pos] = ServoCaliBration[pos].PWMOn;
 	}
 }
 
