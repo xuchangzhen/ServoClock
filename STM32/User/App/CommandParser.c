@@ -33,7 +33,6 @@ void CommandParse_USART1(void) {  //USART1  接收舵机校准编号
 状态2: 时钟,日期数据
 */
 void CommandParse_USART2(void) {  //USART2 
-	MyUSART2_ReceiveBuff();
 	if (BufferFlag != 1) return ;
 	//舵机校准状态
 	if (AppMode == APP_MODE_CALIBRATE_ON || AppMode == APP_MODE_CALIBRATE_OFF) {  //舵机调整阶段 

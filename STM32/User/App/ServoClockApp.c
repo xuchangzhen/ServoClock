@@ -27,12 +27,11 @@ ServoApp_Mode AppMode = APP_MODE_ERROR;
 void ServoClockApp_Init(void) {
 	MyI2C1_Init();
 	PCA9685_SetFreq50Hz();
+	MyUSART1_Init();
 	MyUSART2_Init();
 	MyADC_Init();
 	MySPI_Init();
 	MyKey_Init();
-	MyUSART1_Init();
-	NVIC_USART1_Init();
 	MyTIM_Init();
 	
 	Servo_Init();

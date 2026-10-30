@@ -37,6 +37,8 @@ void MyUSART1_Init(void) {
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_Init(USART1, &USART_InitStructure);
 	
+	NVIC_USART1_Init();  //中断配置
+	
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 	
 	USART_Cmd(USART1, ENABLE);
@@ -49,8 +51,8 @@ void NVIC_USART1_Init(void) {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
 	
 	NVIC_Init(&NVIC_InitStructure);
 
@@ -80,7 +82,25 @@ void MyUSART2_Init(void) {
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_Init(USART2, &USART_InitStructure);
 	
+	NVIC_USART2_Init();  //中断配置
+	
+	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+	
 	USART_Cmd(USART2, ENABLE);
+}
+
+//UART2中断接收初始化
+void NVIC_USART2_Init(void) {
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	
+	NVIC_InitTypeDef NVIC_InitStructure;
+	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	
+	NVIC_Init(&NVIC_InitStructure);
+
 }
 
 //UART1发送字符
@@ -128,10 +148,10 @@ void USART1_IRQHandler(void) {
 }
 
 //UART2接收时间数据&校准数据
-void MyUSART2_ReceiveBuff(void) {
+void USART2_IRQHandler(void) {
 	uint8_t Data;
 	
-	if (USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == SET) {
+	if (USART_GetITStatus(USART2, USART_IT_RXNE) == SET) {
 		Data = USART_ReceiveData(USART2);
 		
 		if (Data == '#') {  //检测到帧头，开始接收数据

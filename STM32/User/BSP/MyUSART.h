@@ -19,8 +19,8 @@ extern uint8_t BufferFlag;
 void MyUSART1_Init(void);
 void MyUSART2_Init(void);
 void NVIC_USART1_Init(void);
+void NVIC_USART2_Init(void);
 void MyUSART1_SendChar(char c);
 void MyUSART1_SendStr(char* str);
-void MyUSART2_ReceiveBuff(void);
 
 #endif

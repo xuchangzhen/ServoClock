@@ -1,6 +1,7 @@
 #include "CommandProtocol.h"
 
 const static char* TAG = "PROT";
+// uint8_t QueueEmpty_Flag = 1;
 
 void CommandService_Process(void) {  //命令解析
     WebCommand_t Command;
@@ -16,7 +17,7 @@ void CommandService_Process(void) {  //命令解析
         switch (CommandType) {
 
             case WEB_COMMAND_APP_ON:
-                UART2_SendData("#ON@\n", strlen("#ON@\n"));
+                UART2_SendData("#ON@\n", strlen("#ON@\n")); 
             break;
 
             case WEB_COMMAND_APP_OFF:

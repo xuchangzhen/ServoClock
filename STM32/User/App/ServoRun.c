@@ -105,7 +105,8 @@ void ServoToggle_Quad(uint16_t PWM_NOW[], uint16_t Count ) {
 	ServoColon_Off();
 }
 
-void ServoColon_On(void) {  //冒号开启
+//冒号开启
+void ServoColon_On(void) {  
 	int Change = 0;
 	
 	Change = PWM_NOW[28] == ServoCaliBration[28].PWMOn ? 0 : 1;
@@ -121,7 +122,8 @@ void ServoColon_On(void) {  //冒号开启
 	}
 }	
 
-void ServoColon_Off(void) {  //冒号关闭
+//冒号关闭
+void ServoColon_Off(void) {  
 	int Change = 0;
 	
 	Change = PWM_NOW[28] == ServoCaliBration[28].PWMOff ? 0 : 1;

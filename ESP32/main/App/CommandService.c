@@ -43,7 +43,9 @@ esp_err_t CommandService_Enqueue(WebCommand_t Command) {  //命令入队
 }
 
 bool CommandService_Dequeue(WebCommand_t* Command) {  //命令出队
-    if (WebCommandQueue == NULL || Command == NULL) return false;
+    if (WebCommandQueue == NULL || Command == NULL) {
+        return false;
+    }
 
     return xQueueReceive(WebCommandQueue, Command, 0) == pdTRUE;
 }

@@ -8,6 +8,8 @@
 
 #include "esp_log.h"
 
+// extern uint8_t QueueEmpty_Flag;
+
 void CommandService_Process(void);                            //命令解析
 
 #endif
