@@ -27,13 +27,15 @@ extern ServoCalibration_t ServoPWM[ServoCount_All];  			//舵机临时保存值
 extern uint16_t PWM_NOW[ServoCount_All];   						//舵机当前值
 
 void Servo_Init(void);  										//舵机初始化
+void ServoAll_On(void);											//所有舵机处于显示状态
+void ServoAll_Off(void);										//所有舵机处于躺下状态											
 void ServoToggle(uint16_t PWM_NOW[], uint16_t Count); 			//依次反转舵机值
 void ServoToggle_D(uint16_t PWM_NOW[], uint16_t Count );  		//双PCA9685反转舵机值
 void ServoToggle_Quad(uint16_t PWM_NOW[], uint16_t Count );    	//四位同时反转 同段(数码管段)
 void ServoColon_On(void);										//冒号开启
 void ServoColon_Off(void);										//冒号关闭
 void ServoColon_DownOn(void);									//下冒号开启
-void Servo_Off(void);   										//关闭状态
+void ServoApp_Off(void);   										//关闭状态
 void ServoShowNum(uint8_t Num, uint8_t Digit_POS);              //根据断码表展示数据
 void Show_MinAndSec(void);                                      //展示 分 秒
 void Show_HourAndMin(void);  									//展示 时 分

@@ -21,20 +21,37 @@ void Servo_Init(void) {
 	//else ServoCalibration_Init(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));   //默认值存在问题
 	
 	//转动舵机至校准值
-	for (uint16_t i = 0; i < sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]) / 2; ++i ) {
-		PCA9685_SETPWM(i, 0, ServoCaliBration[i].PWMOn);
-		PCA9685_SETPWM(i + 14, 0, ServoCaliBration[i + 14].PWMOn);
-		Delay_ms(80);
-	}
-	ServoColon_On();
+	ServoAll_On();
 //	ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_Quad(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_Quad(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 }
 
+//所有舵机处于显示状态
+void ServoAll_On(void) {
+	for (int i = 0; i < ServoCount_Clock; ++i ) {
+		PCA9685_SETPWM(i, 0, ServoCaliBration[i].PWMOn);
+		PCA9685_SETPWM(i + 14, 0, ServoCaliBration[i + 14].PWMOn);
+		Delay_ms(70);
+	}
+	PCA9685_SETPWM(28, 0, ServoCaliBration[28].PWMOn);
+	PCA9685_SETPWM(29, 0, ServoCaliBration[29].PWMOn);
+}
+
+//所有舵机处于躺下状态
+void ServoAll_Off(void) {
+	for (int i = 0; i < ServoCount_Clock; ++i ) {
+		PCA9685_SETPWM(i, 0, ServoCaliBration[i].PWMOff);
+		PCA9685_SETPWM(i + 14, 0, ServoCaliBration[i + 14].PWMOff);
+		Delay_ms(70);
+	}
+	PCA9685_SETPWM(28, 0, ServoCaliBration[28].PWMOff);
+	PCA9685_SETPWM(29, 0, ServoCaliBration[29].PWMOff);
+}
+
 //关闭状态   只开启中间位 形成 "----"
-void Servo_Off(void) {
+void ServoApp_Off(void) {
 	//逐个关闭
 //	for (uint16_t i = 0; i < sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]); ++i ) {
 //		PCA9685_SETPWM(i, 0, ServoCaliBration[i].PWMOff);
@@ -83,8 +100,6 @@ void ServoToggle_D(uint16_t PWM_NOW[], uint16_t Count ) {
 		Delay_ms(75);
 	}
 	ServoColon_On();
-	Delay_ms(70);
-	ServoColon_Off();
 }
 
 //四位同时反转 同段(数码管段)
@@ -101,8 +116,6 @@ void ServoToggle_Quad(uint16_t PWM_NOW[], uint16_t Count ) {
 		Delay_ms(200);
 	}
 	ServoColon_On();
-	Delay_ms(70);
-	ServoColon_Off();
 }
 
 //冒号开启

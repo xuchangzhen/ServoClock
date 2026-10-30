@@ -67,7 +67,7 @@ void Clock_Off(void) {  //关闭运行
 	AppMode = APP_MODE_OFF; 
 	CommandParse_USART2();
 	if (AppOff_Flag == 0) {  //避免重复执行函数
-		Servo_Off();
+		ServoApp_Off();
 		AppOff_Flag = 1;
 	}
 	
