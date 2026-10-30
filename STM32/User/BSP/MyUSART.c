@@ -1,6 +1,8 @@
 #include "MyUSART.h"
 #include "stdio.h"
 
+#include "ServoClockApp.h"
+
 uint8_t SerialRxFlag 	= 0;
 uint8_t SerialRxData 	= 0;
 uint8_t SerialRxIndex 	= 0;
@@ -107,7 +109,7 @@ void USART1_IRQHandler(void) {
 	uint8_t RxData;
 	if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET) {
 		RxData = USART_ReceiveData(USART1);
-		if (SerialRxFlag == 1) return ;  //存在未处理完成数据
+		if (SerialRxFlag == 1 || AppMode  != APP_MODE_CALIBRATE_ON) return ;  //存在未处理完成数据
 		//检查是否为结束标志
 		if (RxData == '\r' || RxData == '\n') {
 			if (SerialRxIndex > 0) {

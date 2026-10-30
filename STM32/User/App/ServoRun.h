@@ -30,6 +30,9 @@ void Servo_Init(void);  										//舵机初始化
 void ServoToggle(uint16_t PWM_NOW[], uint16_t Count); 			//依次反转舵机值
 void ServoToggle_D(uint16_t PWM_NOW[], uint16_t Count );  		//双PCA9685反转舵机值
 void ServoToggle_Quad(uint16_t PWM_NOW[], uint16_t Count );    	//四位同时反转 同段(数码管段)
+void ServoColon_On(void);										//冒号开启
+void ServoColon_Off(void);										//冒号关闭
+void ServoColon_DownOn(void);									//下冒号开启
 void Servo_Off(void);   										//关闭状态
 void ServoShowNum(uint8_t Num, uint8_t Digit_POS);              //根据断码表展示数据
 void Show_MinAndSec(void);                                      //展示 分 秒

@@ -26,6 +26,7 @@ void Servo_Init(void) {
 		PCA9685_SETPWM(i + 14, 0, ServoCaliBration[i + 14].PWMOn);
 		Delay_ms(80);
 	}
+	ServoColon_On();
 //	ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_Quad(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
@@ -49,6 +50,7 @@ void Servo_Off(void) {
 		}
 		Delay_ms(180);
 	}
+	ServoColon_Off();
 	
 	//开启中间
 	Delay_ms(200);
@@ -66,6 +68,9 @@ void ServoToggle(uint16_t PWM_NOW[], uint16_t Count ) {
 		PCA9685_SETPWM(i, 0, PWM_NOW[i]);
 		Delay_ms(70);
 	}
+	ServoColon_On();
+	Delay_ms(70);
+	ServoColon_Off();
 }
 
 //双PCA9685依次反转舵机值
@@ -77,6 +82,9 @@ void ServoToggle_D(uint16_t PWM_NOW[], uint16_t Count ) {
 		PCA9685_SETPWM(i + 14, 0, PWM_NOW[i + 14]);
 		Delay_ms(75);
 	}
+	ServoColon_On();
+	Delay_ms(70);
+	ServoColon_Off();
 }
 
 //四位同时反转 同段(数码管段)
@@ -92,7 +100,59 @@ void ServoToggle_Quad(uint16_t PWM_NOW[], uint16_t Count ) {
 		PCA9685_SETPWM(i + 7 * 3, 0, PWM_NOW[i + 7 * 3]);
 		Delay_ms(200);
 	}
+	ServoColon_On();
+	Delay_ms(70);
+	ServoColon_Off();
 }
+
+void ServoColon_On(void) {  //冒号开启
+	int Change = 0;
+	
+	Change = PWM_NOW[28] == ServoCaliBration[28].PWMOn ? 0 : 1;
+	if (Change) {
+		PWM_NOW[28] = ServoCaliBration[28].PWMOn;
+		PCA9685_SETPWM(28, 0, PWM_NOW[28]);
+	}
+	
+	Change = PWM_NOW[29] == ServoCaliBration[29].PWMOn ? 0 : 1;
+	if (Change) {
+		PWM_NOW[29] = ServoCaliBration[29].PWMOn;
+		PCA9685_SETPWM(29, 0, PWM_NOW[29]);
+	}
+}	
+
+void ServoColon_Off(void) {  //冒号关闭
+	int Change = 0;
+	
+	Change = PWM_NOW[28] == ServoCaliBration[28].PWMOff ? 0 : 1;
+	if (Change) {
+		PWM_NOW[28] = ServoCaliBration[28].PWMOff;
+		PCA9685_SETPWM(28, 0, PWM_NOW[28]);
+	}
+	
+	Change = PWM_NOW[29] == ServoCaliBration[29].PWMOff ? 0 : 1;
+	if (Change) {
+		PWM_NOW[29] = ServoCaliBration[29].PWMOff;
+		PCA9685_SETPWM(29, 0, PWM_NOW[29]);
+	}
+}
+
+void ServoColon_DownOn(void) {  //下冒号开启
+	int Change = 0;
+	
+	Change = PWM_NOW[28] == ServoCaliBration[28].PWMOff ? 0 : 1;
+	if (Change) {
+		PWM_NOW[28] = ServoCaliBration[28].PWMOff;
+		PCA9685_SETPWM(28, 0, PWM_NOW[28]);
+	}
+	
+	Change = PWM_NOW[29] == ServoCaliBration[29].PWMOn ? 0 : 1;
+	if (Change) {
+		PWM_NOW[29] = ServoCaliBration[29].PWMOn;
+		PCA9685_SETPWM(29, 0, PWM_NOW[29]);
+	}
+}
+
 
 //根据断码表展示 数据     
 void ServoShowNum(uint8_t Num, uint8_t Digit_POS) {
@@ -136,6 +196,7 @@ void Show_MinAndSec(void) {
 	for (int i = 0; i < Digit; ++i ) {
 		ServoShowNum(NUM[i], i);
 	}
+	ServoColon_On();
 }
 
 //展示时 分
@@ -154,6 +215,7 @@ void Show_HourAndMin(void) {
 	for (int i = 0; i < Digit; ++i ) {
 		ServoShowNum(NUM[i], i);
 	}
+	ServoColon_On();
 }
 
 //展示年份
@@ -177,6 +239,7 @@ void Show_Year(void) {
 	for (int i = 0; i < Digit; ++i ) {
 		ServoShowNum(NUM[i], i);
 	}
+	ServoColon_Off();
 }
 
 //获取月份 日期
@@ -195,6 +258,7 @@ void Show_MonAndDay(void){
 	for (int i = 0; i < Digit; ++i ) {
 		ServoShowNum(NUM[i], i);
 	}
+	ServoColon_DownOn();
 }  
 
 //根据实际指令显示
