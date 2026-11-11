@@ -1,0 +1,31 @@
+#ifndef __W25Q64_H
+#define __W25Q64_H
+
+#include "stm32f10x.h"                  // Device header
+#include "stdbool.h"
+
+typedef enum{
+	W25Q64_OK,
+	W25Q64_ERROR_WRITE_ENABLE,
+	W25Q64_ERROR_WRITE_DISABLE,
+	W25Q64_ERROR_ILLEGEL_SECTOR_ADDRESS,
+	W25Q64_ERROR_SendData,
+	W25Q64_ERROR_READ_DATA,
+	W25Q64_ERROR_READ_STATUS,
+	W25Q64_ERROR_TIMEOUT,
+	W25Q64_ERROR_WRITEDATA_LENGTH,
+	W25Q64_ERROR_WRITEDATA_INSECTOR_LENGTH,
+	W25Q64_ERROR_ADDRESS,
+	W25Q64_ERROR_SECTOR_BOUNDARY
+	
+	
+	
+	
+}W25Q64_STATUS;
+
+
+W25Q64_STATUS W25Q64_PageProgram(uint32_t Address, uint8_t* Data, uint32_t Length);
+W25Q64_STATUS W25Q64_ReadData(uint32_t Address, uint8_t* Data, uint32_t Length);
+W25Q64_STATUS W25Q64_WriteData(uint32_t Address, uint8_t* Data, uint16_t Length);
+
+#endif
