@@ -1,4 +1,6 @@
 #include "MyUSART.h"
+
+#include "CommandParser.h"
 #include "stdio.h"
 
 #include "ServoClockApp.h"
@@ -10,7 +12,7 @@ uint8_t SerialRxOverflow = 0;
 char USART1_Buffer[USART1_BufferSize];
 
 char USART2_Buffer[USART2_BufferSize];
-uint8_t BufferFlag = 0;
+//uint8_t BufferFlag = 0;
 static uint8_t BufferIndex = 0;
 static uint8_t FrameReceiving = 0;
 
@@ -167,9 +169,8 @@ void USART2_IRQHandler(void) {
 			BufferIndex++;
 		}else if (Data == '@' ) {  //帧尾 结束标志
 			USART2_Buffer[BufferIndex] = '\0';
-			BufferFlag = 1;
-			BufferIndex = 0;
-			FrameReceiving = 0;
+		    USART2_Cycle_Write(USART2_Buffer, BufferIndex);  //数据接收完毕立刻写入到缓冲区
+		    BufferIndex = 0;
 		}
 		if (BufferIndex >= USART2_BufferSize - 1) {
 			BufferIndex = 0;

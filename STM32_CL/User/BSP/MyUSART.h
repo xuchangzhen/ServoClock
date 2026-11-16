@@ -11,9 +11,10 @@ extern uint8_t SerialRxFlag;
 extern uint8_t SerialRxData;
 extern char USART1_Buffer[USART1_BufferSize];
 
+
 //时间数组
-extern char USART2_Buffer[USART2_BufferSize];
-extern uint8_t BufferFlag;
+//extern char USART2_Buffer[USART2_BufferSize];
+//extern uint8_t BufferFlag;
 
 
 void MyUSART1_Init(void);

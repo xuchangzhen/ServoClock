@@ -52,7 +52,7 @@ void ServoClockApp_Process(void){  //程序进程
 
 void Clock_Run(void){  //舵机运行状态
 	CommandParse_USART1();
-	CommandParse_USART2();
+	USART2_Cycle_Read();
 	if (CommandMode == COMMANDPARSE_ADJUST_PWM ) AppMode = APP_MODE_CALIBRATE_ON;  //进入校准模式
 	else if (CommandMode == COMMANDPARSE_OFF) 	  Clock_Off();		  				//关闭时钟
 	else if (TimeValid) {  															//展示时间
@@ -65,7 +65,7 @@ void Clock_Run(void){  //舵机运行状态
 
 void Clock_Off(void) {  //关闭运行
 	AppMode = APP_MODE_OFF; 
-	CommandParse_USART2();
+	USART2_Cycle_Read();  //不断读取 缓冲区等待新数据到来
 	if (AppOff_Flag == 0) {  //避免重复执行函数
 		ServoApp_Off();
 		AppOff_Flag = 1;
@@ -80,7 +80,7 @@ void Clock_Off(void) {  //关闭运行
 
 void Clock_CalibrationOn(void) {  		//网页校准ON数据
 	CommandParse_USART1();
-	CommandParse_USART2();
+    USART2_Cycle_Read();  //不断读取 缓冲区等待新数据到来
 	if (CommandMode == COMMANDPARSE_TIME) {  //退出校准模式
 		
 		AppMode = APP_MODE_RUN;  
@@ -99,7 +99,7 @@ void Clock_CalibrationOn(void) {  		//网页校准ON数据
 	}   
 
 	if (CommandMode == COMMANDPARSE_ADJUST_PWM) {  //获取到校准信号
-		ServoCalibration_On();
+		ServoCalibration_On(USART2_CommandBuffer);
 	}else if (CommandMode == COMMANDPARSE_SAVE) {
 		LED_Yellow_ON();
 		AppMode = APP_MODE_CALIBRATE_OFF;
@@ -118,9 +118,9 @@ void Clock_CalibrationOn(void) {  		//网页校准ON数据
 
 
 void Clock_CalibrationOff(void) {  //网页校准ON数据
-	CommandParse_USART2();
+    USART2_Cycle_Read();  //不断读取 缓冲区等待新数据到来
 	if (CommandMode == COMMANDPARSE_ADJUST_PWM) {  //获取到校准信号
-		ServoCalibration_Off();
+		ServoCalibration_Off(USART2_CommandBuffer);
 	}else if (CommandMode == COMMANDPARSE_SAVE) {  //保存ON 和 OFF 数据
 		memcpy(ServoCaliBration, ServoPWM, sizeof(ServoPWM));
 		ServoCalibration_Save(ServoCaliBration, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
