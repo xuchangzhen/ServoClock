@@ -158,18 +158,22 @@ void USART2_IRQHandler(void) {
 		
 		if (Data == '#') {  //检测到帧头，开始接收数据
 			BufferIndex = 0;
+		    USART2_Buffer[BufferIndex] = (char)Data;
 			FrameReceiving = 1;
+		    ++BufferIndex;
 			return ;
 		}
 		
-		if (FrameReceiving == 0) return ;  //为接收到帧头
+		if (FrameReceiving == 0) return ;  //未接收到帧头
 		
 		if (Data != '@' ) {  //未检测到帧尾，一直接收
 			USART2_Buffer[BufferIndex] = (char)Data;
 			BufferIndex++;
 		}else if (Data == '@' ) {  //帧尾 结束标志
-			USART2_Buffer[BufferIndex] = '\0';
-		    USART2_Cycle_Write(USART2_Buffer, BufferIndex);  //数据接收完毕立刻写入到缓冲区
+		    USART2_Buffer[BufferIndex] = (char)Data;
+		 //    BufferIndex++;
+			// USART2_Buffer[BufferIndex] = '\0';
+		    USART2_Cycle_Write(USART2_Buffer, BufferIndex + 1);  //数据接收完毕立刻写入到缓冲区\
 		    BufferIndex = 0;
 		}
 		if (BufferIndex >= USART2_BufferSize - 1) {

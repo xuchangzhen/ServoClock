@@ -15,6 +15,8 @@ uint8_t USART2_Cycle_WriteIndex = 0;     //循环缓冲区写入位
 uint8_t USART2_Cycle_ReadIndex = 0;		//循环缓冲区读取位
 
 uint8_t USART2_CommandBuffer[USART2_BufferSize];      //读取指令存放数组
+uint32_t Command_Index = 0;                           //指令数组下标
+uint8_t Command_Start = 0;
 
 void CommandParse_USART1(void) {  //USART1  接收舵机校准编号
 	if (SerialRxFlag == 1) {  //接收到校准信号
@@ -101,8 +103,9 @@ void USART2_Cycle_Write(uint8_t* Data, USART2_Cycle_Length_t Length) {  //将数
     USART2_Cycle_Length_t RemainLength = USART2_CycleRemain_Get();  //查询缓冲区剩余空间
     if (RemainLength < Length) return ;  //剩余空间不足
     else {
-        if (USART2_CycleSize - USART2_Cycle_WriteIndex > 0) {  //后面剩余位置可以完全写入新数据
+        if (USART2_CycleSize - USART2_Cycle_WriteIndex > Length) {  //后面剩余位置可以完全写入新数据
             memcpy(USART2_CycleBuffer + USART2_Cycle_WriteIndex, Data, Length);
+
         }else {  //需要分批写入
             USART2_Cycle_Length_t WriteLength = USART2_CycleSize - USART2_Cycle_WriteIndex;
             memcpy(USART2_CycleBuffer + USART2_Cycle_WriteIndex, Data, WriteLength);
@@ -114,16 +117,18 @@ void USART2_Cycle_Write(uint8_t* Data, USART2_Cycle_Length_t Length) {  //将数
 }
 
 void USART2_Cycle_Read(void) {  //将新指令读取到指令数组
+    Command_Index %= (UINT32_MAX - 1);  //避免越界
     if (USART2_Cycle_Empty()) return ;  //缓冲区为空，不进行操作
-    for (uint8_t i = 0 ; ; ++i) {
-        if (USART2_CycleBuffer[USART2_Cycle_ReadIndex] == '#') {
-            i = 0;
-        }else if (USART2_CycleBuffer[USART2_Cycle_ReadIndex] == '@') {
-            CommandParse_USART2(USART2_CommandBuffer);  //获取完整帧后立刻进行解析
-            return ;
-        }else {  //将数据写入到指令数组
-            USART2_CommandBuffer[i] = USART2_CycleBuffer[USART2_Cycle_ReadIndex];
-        }
-        USART2_Cycle_ReadIndex = (USART2_Cycle_ReadIndex + 1) % USART2_CycleSize;
+
+    if (USART2_CycleBuffer[USART2_Cycle_ReadIndex] == '#') {
+        Command_Index = 0;
+        Command_Start = 1;
+    }else if (USART2_CycleBuffer[USART2_Cycle_ReadIndex] == '@') {
+        if (Command_Start) CommandParse_USART2(USART2_CommandBuffer);  //获取完整帧后立刻进行解析
+        Command_Start = 0;
+    }else {  //将数据写入到指令数组
+        USART2_CommandBuffer[Command_Index] = USART2_CycleBuffer[USART2_Cycle_ReadIndex];
+        Command_Index = (Command_Index + 1) % (UINT32_MAX);
     }
+    USART2_Cycle_ReadIndex = (USART2_Cycle_ReadIndex + 1) % USART2_CycleSize;
 }

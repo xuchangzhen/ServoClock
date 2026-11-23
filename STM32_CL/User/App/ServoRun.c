@@ -22,8 +22,8 @@ void Servo_Init(void) {
 	
 	//转动舵机至校准值
 	ServoAll_On();
-//	ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
-//	ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
+	// ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
+	// ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_Quad(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_Quad(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 }

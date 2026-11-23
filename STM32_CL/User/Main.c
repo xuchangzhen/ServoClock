@@ -23,6 +23,7 @@
 
 #define TEST_MODE 0
 
+
 int main(void) {
 #if TEST_MODE == 1
 	MySPI_Init();

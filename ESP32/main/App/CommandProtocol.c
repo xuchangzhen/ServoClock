@@ -12,7 +12,7 @@ void CommandService_Process(void) {  //命令解析
 
         WebCommandType_t CommandType = Command.Type;
 
-        char Frame[32];
+            char Frame[32];
         //解析指令
         switch (CommandType) {
 
