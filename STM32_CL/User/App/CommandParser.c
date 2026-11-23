@@ -86,9 +86,9 @@ void CommandParse_USART2(const char* CommandBuffer) {  //USART2
 USART2_Cycle_Length_t USART2_CycleRemain_Get() {  //获取缓冲区剩余长度
     USART2_Cycle_Length_t Length = 0;
 	if (USART2_Cycle_WriteIndex == USART2_Cycle_ReadIndex) {  //不存在未读取数据
-        Length = USART2_CycleSize;
-	}else if (USART2_Cycle_WriteIndex - 1 > USART2_Cycle_ReadIndex) {  //写入位置在后
-	    Length = USART2_CycleSize - USART2_Cycle_WriteIndex + USART2_Cycle_ReadIndex;
+        Length = USART2_CycleSize - 1;
+	}else if (USART2_Cycle_WriteIndex > USART2_Cycle_ReadIndex) {  //写入位置在后
+	    Length = USART2_CycleSize - USART2_Cycle_WriteIndex + USART2_Cycle_ReadIndex - 1;
 	}else if (USART2_Cycle_ReadIndex - 1 > USART2_Cycle_WriteIndex) {  //写入已经回头
 	    Length = USART2_Cycle_ReadIndex - USART2_Cycle_WriteIndex - 1;
 	}
@@ -96,7 +96,7 @@ USART2_Cycle_Length_t USART2_CycleRemain_Get() {  //获取缓冲区剩余长度
 }
 
 uint8_t USART2_Cycle_Empty(void) {  //判断缓冲区是否为空
-    return USART2_CycleRemain_Get() == USART2_CycleSize;
+    return USART2_CycleRemain_Get() == USART2_CycleSize - 1;
 }
 
 void USART2_Cycle_Write(uint8_t* Data, USART2_Cycle_Length_t Length) {  //将数据写入缓冲区
@@ -124,11 +124,12 @@ void USART2_Cycle_Read(void) {  //将新指令读取到指令数组
         Command_Index = 0;
         Command_Start = 1;
     }else if (USART2_CycleBuffer[USART2_Cycle_ReadIndex] == '@') {
+        USART2_CommandBuffer[Command_Index] = '\0';
         if (Command_Start) CommandParse_USART2(USART2_CommandBuffer);  //获取完整帧后立刻进行解析
         Command_Start = 0;
     }else {  //将数据写入到指令数组
         USART2_CommandBuffer[Command_Index] = USART2_CycleBuffer[USART2_Cycle_ReadIndex];
-        Command_Index = (Command_Index + 1) % (UINT32_MAX);
+        Command_Index = (Command_Index + 1) % (USART2_BufferSize);
     }
     USART2_Cycle_ReadIndex = (USART2_Cycle_ReadIndex + 1) % USART2_CycleSize;
 }
