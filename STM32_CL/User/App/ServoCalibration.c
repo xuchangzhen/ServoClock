@@ -17,7 +17,7 @@ void ServoCalibration_Init(uint16_t PWM_NOW[], uint16_t Count ) {
 
 void ServoCalibration_On(uint8_t* PWM_Buffer) {  //校准ON
 	int16_t PWMChange;
-	PWMChange = (int16_t)strtol(&PWM_Buffer[4], NULL, 10);
+	PWMChange = (int16_t)strtol((const char*)&PWM_Buffer[4], NULL, 10);
 	ServoPWM[SerialRxData].PWMOn = PWMChange + ServoPWM[SerialRxData].PWMOn;
 	ServoPWM[SerialRxData].PWMOn = Check_PWMValue(ServoPWM[SerialRxData].PWMOn);
 	PCA9685_SETPWM(SerialRxData, 0, ServoPWM[SerialRxData].PWMOn);
@@ -25,7 +25,7 @@ void ServoCalibration_On(uint8_t* PWM_Buffer) {  //校准ON
 
 void ServoCalibration_Off(uint8_t* PWM_Buffer) {  //校准OFF
 	int16_t PWMChange;
-	PWMChange = (int16_t)strtol(&PWM_Buffer[4], NULL, 10);
+	PWMChange = (int16_t)strtol((const char*)&PWM_Buffer[4], NULL, 10);
 	ServoPWM[SerialRxData].PWMOff = PWMChange + ServoPWM[SerialRxData].PWMOff;
 	ServoPWM[SerialRxData].PWMOff = Check_PWMValue(ServoPWM[SerialRxData].PWMOff);
 	PCA9685_SETPWM(SerialRxData, 0, ServoPWM[SerialRxData].PWMOff);

@@ -171,9 +171,8 @@ void USART2_IRQHandler(void) {
 			BufferIndex++;
 		}else if (Data == '@' ) {  //帧尾 结束标志
 		    USART2_Buffer[BufferIndex] = (char)Data;
-		 //    BufferIndex++;
-			// USART2_Buffer[BufferIndex] = '\0';
-		    USART2_Cycle_Write(USART2_Buffer, BufferIndex + 1);  //数据接收完毕立刻写入到缓冲区\
+		    FrameReceiving = 0;
+		    USART2_Cycle_Write((uint8_t*)USART2_Buffer, BufferIndex + 1);  //数据接收完毕立刻写入到缓冲区
 		    BufferIndex = 0;
 		}
 		if (BufferIndex >= USART2_BufferSize - 1) {

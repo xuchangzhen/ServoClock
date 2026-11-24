@@ -7,5 +7,6 @@
 
 void PCA9685_SetFreq50Hz(void);  //设置PWM频率
 void PCA9685_SETPWM(uint8_t Channel, uint16_t OnCount, uint16_t OffCount);  //设置对应板子频率
+uint8_t Is_PCA9685_Ready(void);  //双PCA9685是否完成初始化
 
 #endif

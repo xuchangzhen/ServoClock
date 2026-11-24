@@ -125,7 +125,7 @@ void USART2_Cycle_Read(void) {  //将新指令读取到指令数组
         Command_Start = 1;
     }else if (USART2_CycleBuffer[USART2_Cycle_ReadIndex] == '@') {
         USART2_CommandBuffer[Command_Index] = '\0';
-        if (Command_Start) CommandParse_USART2(USART2_CommandBuffer);  //获取完整帧后立刻进行解析
+        if (Command_Start) CommandParse_USART2((char*)USART2_CommandBuffer);  //获取完整帧后立刻进行解析
         Command_Start = 0;
     }else {  //将数据写入到指令数组
         USART2_CommandBuffer[Command_Index] = USART2_CycleBuffer[USART2_Cycle_ReadIndex];

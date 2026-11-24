@@ -23,10 +23,13 @@ const static uint8_t SegmentCode[10] = {
     0x6F   // 9
 };
 
+static uint8_t Servo_Ready = 0;
+
 extern ServoCalibration_t ServoPWM[ServoCount_All];  			//舵机临时保存值
 extern uint16_t PWM_NOW[ServoCount_All];   						//舵机当前值
 
 void Servo_Init(void);  										//舵机初始化
+uint8_t Is_Servo_Ready(void);                                   //查看校准值是否到位
 void ServoAll_On(void);											//所有舵机处于显示状态
 void ServoAll_Off(void);										//所有舵机处于躺下状态											
 void ServoToggle(uint16_t PWM_NOW[], uint16_t Count); 			//依次反转舵机值

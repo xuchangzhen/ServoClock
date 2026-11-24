@@ -12,12 +12,16 @@ void Servo_Init(void) {
 			ServoCaliBration[i] = ServoPWM[i];	
 			PWM_NOW[i] = ServoCaliBration[i].PWMOn;
 		}
-	}else {  //只能获取到部分校准值
-		for (uint16_t i = 0; i < CNT; ++i ) {
-			ServoCaliBration[i] = ServoPWM[i];	
-			PWM_NOW[i] = ServoCaliBration[i].PWMOn;
-		}
+	    Servo_Ready = 1;
+	}else {
+		return ;  //直接返回，避免执行多余操作
 	}
+ //    else {  //只能获取到部分校准值
+	// 	for (uint16_t i = 0; i < CNT; ++i ) {
+	// 		ServoCaliBration[i] = ServoPWM[i];
+	// 		PWM_NOW[i] = ServoCaliBration[i].PWMOn;
+	// 	}
+	// }
 	//else ServoCalibration_Init(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));   //默认值存在问题
 	
 	//转动舵机至校准值
@@ -26,6 +30,11 @@ void Servo_Init(void) {
 	// ServoToggle_D(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_Quad(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
 //	ServoToggle_Quad(PWM_NOW, sizeof(ServoCaliBration) / sizeof(ServoCaliBration[0]));
+}
+
+//查看校准值是否到位
+uint8_t Is_Servo_Ready(void) {
+    return Servo_Ready == 1;
 }
 
 //所有舵机处于显示状态

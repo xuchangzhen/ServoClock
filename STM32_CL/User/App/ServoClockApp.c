@@ -20,6 +20,7 @@
 #include "string.h"
 #include "USART_Test.h"
 
+
 static uint8_t AppOff_Flag = 0;
 ServoApp_Mode AppMode = APP_MODE_ERROR;
 
@@ -38,7 +39,19 @@ void ServoClockApp_Init(void) {
 	LED_init();
 	LED_Green_OFF();
 	LED_Yellow_OFF();
-	
+
+	while (Is_PCA9685_Ready() != 1) {
+        //等待PCA9685就绪
+        Delay_ms(200);
+		MyI2C1_Init();
+        PCA9685_SetFreq50Hz();
+	}
+    while (Is_Servo_Ready() != 1) {
+        //等待校准值到位
+			Delay_ms(200);
+        Servo_Init();
+    }
+
 	AppMode = APP_MODE_RUN;
 }
 

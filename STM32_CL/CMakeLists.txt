@@ -49,7 +49,7 @@ target_compile_definitions(ServoClock.elf PRIVATE
 target_compile_options(ServoClock.elf PRIVATE
     -mcpu=cortex-m3
     -mthumb
-    -Og
+    -O0
     -g3
     -ffunction-sections
     -fdata-sections

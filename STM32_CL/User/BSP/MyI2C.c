@@ -30,10 +30,15 @@ void MyI2C1_Init(void) {
 
 } 
 
-//清除错误标志位并结束通信
-void MyI2C_ClearFlagAndStop(I2C_TypeDef* I2Cx) {
+//清除AF.STOP标志位并结束通信
+void MyI2C_ClearAFAndStop(I2C_TypeDef* I2Cx) {
 	if (I2C_GetFlagStatus(I2Cx ,I2C_FLAG_AF) == SET) I2C_ClearFlag(I2Cx ,I2C_FLAG_AF);
 	I2C_GenerateSTOP(I2Cx, ENABLE);
+}
+
+//清除START标志位并结束通信
+void MyI2C_ClearStart(I2C_TypeDef* I2Cx) {
+	I2C_GenerateSTART(I2Cx, DISABLE);
 }
 
 //向通信设备寄存器写入数据
@@ -42,8 +47,7 @@ MYI2C_STATUS MyI2C_WriteRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, u
 	
 	//检查总线是否空闲
 	while (I2C_GetFlagStatus(I2Cx, I2C_FLAG_BUSY) == SET) {
-		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			if (TimeOut-- == 0) {
 			return MYI2C_ERROR_BUSY;
 		}
 	}
@@ -53,7 +57,7 @@ MYI2C_STATUS MyI2C_WriteRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, u
 	I2C_GenerateSTART(I2Cx, ENABLE);
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_MODE_SELECT) == ERROR) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearStart(I2Cx);
 			return MYI2C_ERROR_START;
 		}
 	}
@@ -63,7 +67,7 @@ MYI2C_STATUS MyI2C_WriteRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, u
 	I2C_Send7bitAddress(I2Cx, SlaveAddress7Bit << 1, I2C_Direction_Transmitter);
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) == ERROR) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_SEND_SLAVEADDRESS;
 		}
 	}
@@ -73,7 +77,7 @@ MYI2C_STATUS MyI2C_WriteRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, u
 	I2C_SendData(I2Cx, RegisterAddress);
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_BYTE_TRANSMITTING) == ERROR) {  //等待数据全部移除移位寄存器，即数据真正的发出去了
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_SEND_RESADDRESS;
 		}
 	}
@@ -83,13 +87,13 @@ MYI2C_STATUS MyI2C_WriteRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, u
 	I2C_SendData(I2Cx, Data);
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_BYTE_TRANSMITTED) == ERROR) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_SEND_DATA;
 		}
 	}
 	
 	//结束发送
-	MyI2C_ClearFlagAndStop(I2Cx);
+	MyI2C_ClearAFAndStop(I2Cx);
 	return MYI2C_OK;
 }
 
@@ -100,7 +104,6 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	//检查总线是否空闲
 	while (I2C_GetFlagStatus(I2Cx, I2C_FLAG_BUSY) == SET) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
 			return MYI2C_ERROR_BUSY;
 		}
 	}
@@ -110,7 +113,7 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	I2C_GenerateSTART(I2Cx, ENABLE);
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_MODE_SELECT) == ERROR) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearStart(I2Cx);
 			return MYI2C_ERROR_START;
 		}
 	}
@@ -120,7 +123,7 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	I2C_Send7bitAddress(I2Cx, SlaveAddress7Bit << 1, I2C_Direction_Transmitter);
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED) == ERROR) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_SEND_SLAVEADDRESS;
 		}
 	}
@@ -130,7 +133,7 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	I2C_SendData(I2Cx, RegisterAddress);
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_BYTE_TRANSMITTED) == ERROR) {  //等待数据全部移除移位寄存器，即数据真正的发出去了
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_SEND_RESADDRESS;
 		}
 	}
@@ -142,7 +145,7 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	TimeOut = MYI2C_TIMEOUT;
 	while (I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_MODE_SELECT) == ERROR) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_RESTART;
 		}
 	}
@@ -152,7 +155,7 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	I2C_Send7bitAddress(I2Cx, SlaveAddress7Bit << 1, I2C_Direction_Receiver);
 	while (I2C_GetFlagStatus(I2Cx, I2C_FLAG_ADDR) == RESET) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_SEND_RECEIVE;
 		}
 	}
@@ -174,7 +177,7 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	TimeOut = MYI2C_TIMEOUT;
 	while (I2C_GetFlagStatus(I2Cx, I2C_FLAG_RXNE) == RESET) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_RECEIVE;
 		}
 	}
@@ -185,7 +188,7 @@ MYI2C_STATUS MyI2C_ReadRegister(I2C_TypeDef* I2Cx, uint32_t SlaveAddress7Bit, ui
 	TimeOut = MYI2C_TIMEOUT;
 	while(I2C_GetFlagStatus(I2Cx, I2C_FLAG_BUSY) == SET) {
 		if (TimeOut-- == 0) {
-			MyI2C_ClearFlagAndStop(I2Cx);
+			MyI2C_ClearAFAndStop(I2Cx);
 			return MYI2C_ERROR_STOP;
 		}
 	}

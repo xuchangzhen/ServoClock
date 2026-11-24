@@ -29,5 +29,6 @@
 .\objects\myusart.o: .\Library\stm32f10x_usart.h
 .\objects\myusart.o: .\Library\stm32f10x_wwdg.h
 .\objects\myusart.o: .\Library\misc.h
+.\objects\myusart.o: .\User\App\CommandParser.h
 .\objects\myusart.o: D:\Keil5\STM32_material\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\myusart.o: .\User\App\ServoClockApp.h

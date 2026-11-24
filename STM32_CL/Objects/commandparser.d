@@ -1,5 +1,6 @@
 .\objects\commandparser.o: User\App\CommandParser.c
 .\objects\commandparser.o: User\App\CommandParser.h
+.\objects\commandparser.o: .\User\BSP\MyUSART.h
 .\objects\commandparser.o: .\Start\stm32f10x.h
 .\objects\commandparser.o: .\Start\core_cm3.h
 .\objects\commandparser.o: D:\Keil5\STM32_material\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,7 +30,6 @@
 .\objects\commandparser.o: .\Library\stm32f10x_usart.h
 .\objects\commandparser.o: .\Library\stm32f10x_wwdg.h
 .\objects\commandparser.o: .\Library\misc.h
-.\objects\commandparser.o: .\User\BSP\MyUSART.h
 .\objects\commandparser.o: D:\Keil5\STM32_material\Keil5 MDK\ARM\ARMCC\Bin\..\include\string.h
 .\objects\commandparser.o: D:\Keil5\STM32_material\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\commandparser.o: User\App\ServoCalibration.h

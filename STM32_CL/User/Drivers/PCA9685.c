@@ -1,11 +1,18 @@
 #include "PCA9685.h"
 
+PCA9685_L_STATUS result_l;
+PCA9685_R_STATUS result_r;
+uint8_t PCA9685_Ready = 0;
 
+uint8_t Is_PCA9685_Ready(void) {
+	return PCA9685_Ready == 1;
+}
 
 //设置PWM频率
 void PCA9685_SetFreq50Hz(void) {
-	PCA9685_L_SetFreq50Hz();
-	PCA9685_R_SetFreq50Hz();
+	result_l = PCA9685_L_SetFreq50Hz();
+	result_r = PCA9685_R_SetFreq50Hz();
+	PCA9685_Ready = (result_l == PCA9685_L_OK) && (result_r == PCA9685_R_OK) ? 1 : 0;
 }
 
 //设置对应板子频率
