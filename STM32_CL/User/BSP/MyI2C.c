@@ -21,7 +21,7 @@ void MyI2C1_Init(void) {
 	I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
 	I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
 	I2C_InitStructure.I2C_ClockSpeed = 100000;
-	I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;  //设置占空比有什么用
+	I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;  //高电平是低电平占空比的两倍，但是这里不生效，只在时钟快速模式生效
 	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
 	I2C_InitStructure.I2C_OwnAddress1 = 0x00;
 	I2C_Init(I2C1, &I2C_InitStructure);

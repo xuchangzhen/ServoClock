@@ -8,6 +8,7 @@
 #include "esp_netif_sntp.h"
 #include "nvs_flash.h"
 #include "esp_log.h"
+#include "lwip/dns.h"
 
 static const char *TAG = "CLOCK";
 // extern bool SNTPStarted;
@@ -22,15 +23,20 @@ static void TimeZone_Init(void) {
 
 // 初始化SNTP
 void Time_Init(void) {
+    
     //初始化时区
     TimeZone_Init();
 
-    esp_sntp_config_t Config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org"); // 选择时间服务器
+    esp_sntp_config_t Config = ESP_NETIF_SNTP_DEFAULT_CONFIG("ntp.tencent.com"); // 选择时间服务器   106.55.184.199
 
     ESP_ERROR_CHECK(esp_netif_sntp_init(&Config));
     ESP_LOGI(TAG, "SNTP_Init");
 
     ESP_LOGI(TAG, "Waiting for SNTP sync...");
+
+    const ip_addr_t* dns = dns_getserver(0);
+    ESP_LOGI(TAG, "Current Dns Server: %s", ipaddr_ntoa(dns));
+
 
     // 等待时间服务器同步,不成功不返回
     while (1) {
@@ -40,8 +46,9 @@ void Time_Init(void) {
             ESP_LOGI(TAG, "SNTP sync success");
             break;
         }
-
+        
         ESP_LOGI(TAG, "SNTP sync timeout, retrying...");
+        ESP_LOGI(TAG, "Fail Reason = %d", Result);
     }
 }
 

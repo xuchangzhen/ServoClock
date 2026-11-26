@@ -8,6 +8,7 @@
 #include "esp_log.h"
 #include "esp_netif_sntp.h"
 #include "nvs_flash.h"
+#include "lwip/dns.h"
 
 
 static const char *TAG = "CLOCK";
@@ -16,8 +17,7 @@ volatile bool WIFIConnected = false;
 
 static void WIFI_EventHandler(void *Arg, esp_event_base_t EventBase, int32_t EventID, void *EventData){
     // wifi连接事件
-    if (EventBase == WIFI_EVENT && EventID == WIFI_EVENT_STA_START)
-    {
+    if (EventBase == WIFI_EVENT && EventID == WIFI_EVENT_STA_START){
         esp_wifi_connect();
     }
 
@@ -46,6 +46,16 @@ static void WIFI_EventHandler(void *Arg, esp_event_base_t EventBase, int32_t Eve
         WIFIConnected = true;
         WebServe_Start();
     }
+}
+
+bool DNS_Change(void) {  //修改dns，避免把网关当作dns服务器
+    while (WIFIConnected == false) {
+        vTaskDelay(100);
+    }
+    ip_addr_t dns_server;
+    ipaddr_aton("119.29.29.29", &dns_server);
+    dns_setserver(0, &dns_server);
+    return true;
 }
 
 void WIFI_Init(void){
@@ -102,4 +112,6 @@ void WIFI_Init(void){
 
     // 启动wifi，后续出现问题由事件函数触发
     ESP_ERROR_CHECK(esp_wifi_start());
+
+    DNS_Change();
 }

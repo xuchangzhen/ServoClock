@@ -20,6 +20,7 @@ void App_Init(void) {
     ESP_ERROR_CHECK(CommandService_Init());
     WIFI_Init();
     Time_Get();
+    
 
     char Data[uart_Send_Length];
 
@@ -32,6 +33,7 @@ void App_Init(void) {
         if ((TickType_t)(NowTick - LastSendTick) >= pdMS_TO_TICKS(1000) && (App_Mode == APP_MODE_TIME) ) {  //1s发送一次时间
             TimeToSTM32(Data, uart_Send_Length);
             UART2_SendData(Data, strlen(Data));    
+            ESP_LOGI(TAG, "Date len: %d", (int)strlen(Data));
     
             LastSendTick = NowTick;
         }
@@ -39,7 +41,7 @@ void App_Init(void) {
         vTaskDelay(pdMS_TO_TICKS(10));
 
     }
-}
+} 
 
 
 //手动复位重启无法同步时间服务器
